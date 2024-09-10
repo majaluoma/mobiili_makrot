@@ -16,10 +16,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FineliPalvelu from "../services/FineliPalvelu";
 import { FinavianRuokaTiedot } from "../types/Interfaces";
 import log from "../services/log";
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import Entypo from "@expo/vector-icons/Entypo";
-import { RootStackParamList } from "../types/ReactTypes";
 
 
 const numberSchema = z.number();
@@ -28,8 +25,7 @@ type IngredientAmount  = {
     ingredient : string;
     amount : number;
 }
-type SearchScreenProps = NativeStackScreenProps<RootStackParamList, 'Ingredients'>
-export default function Ingredients(props : SearchScreenProps) {
+export default function Ingredients() {
     const baseIngredient : IngredientAmount = {
         ingredient: "peruna",
         amount : 0
