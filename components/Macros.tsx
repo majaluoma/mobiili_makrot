@@ -1,10 +1,7 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { RootStackParamList } from "../types/ReactTypes";
 
-type SearchScreenProps = NativeStackScreenProps<RootStackParamList, 'Macros'>
 
 export default function Macros() {
   
