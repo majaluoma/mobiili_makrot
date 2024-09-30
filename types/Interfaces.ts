@@ -19,8 +19,8 @@ export interface RuokaAineMaara {
 export interface Macro extends MacroInterface {
     macroKey: string;
     nickname: string;
-    dishes : number
-    inUse : 0| 1
+    dishes : number;
+    inUse : boolean;
     
 }
 
@@ -108,3 +108,5 @@ interface PreparationMethod extends FinaviaBasicDataStructure{
 
 //Luotu tyypitys finavian dietteihin.
 type SpecialDiet = "SOYAFREE" |"UNSWEET" |"MILKFREE" |"LACSFREE" |"SALTFREE" |"LACVEGE" |"VEGAN" |"GLUTFREE" |"LACOVEGE" |"EGGFREE";
+
+export type DatabaseProcedure = "update" | "remove" | "add" | "toggle";

@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 import MacroCard from "./MacroCard";
 import MacroEditView from "./MacroEditView";
 import Macroservice from "../services/Macroservice";
-import { Macro } from "../types/Interfaces";
+import { DatabaseProcedure, Macro } from "../types/Interfaces";
 
 export default function Macros() {
     const [macros, setMacros] = useState([] as Macro[]);
@@ -32,9 +32,21 @@ export default function Macros() {
         setEditingMakro(undefined);
     };
 
-    const editMacro = (macro: Macro) => {
+    const editMacro = (macro: Macro, procedure : DatabaseProcedure) => {
         console.log("editMacro");
-        openEditView(macro);
+        switch (procedure) {
+            case "update": openEditView(macro); break;
+            case "remove": deleteMacro(macro) ; break;
+            case "add": openEditView(macro); break;
+            case "toggle": saveMacro({...macro, inUse:!macro.inUse}); break;
+        }
+    };
+
+    const deleteMacro = (macro: Macro) => {
+        console.log("deleteMacro");
+        let macroService: Macroservice = new Macroservice();
+        macroService.removeMacro(macro);
+        fetchMacros();
     };
 
     const saveMacro = (macro: Macro) => {

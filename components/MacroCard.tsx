@@ -1,9 +1,9 @@
-import { Macro } from "../types/Interfaces";
+import { DatabaseProcedure, Macro } from "../types/Interfaces";
 import { View, Text, Pressable, StyleSheet, Button } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 type MacroCardProps = {
     macro: Macro | undefined;
-    editMacro: (macro: Macro) => void;
+    editMacro: (macro: Macro, procedure: DatabaseProcedure) => void;
 };
 
 export default function MacroCard({ macro, editMacro }: MacroCardProps) {
@@ -12,7 +12,7 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
             macroKey: "",
             nickname: "",
             dishes: 0,
-            inUse: 0,
+            inUse: true,
             sugar: 0,
             salt: 0,
             energyKcal: 0,
@@ -22,7 +22,7 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
             fiber: 0,
             saturatedFat: 0,
         };
-        editMacro(newMacro);
+        editMacro(newMacro, "add");
     };
 
     if (macro) {
@@ -33,13 +33,13 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
                     <Text>Kcal: {macro.energyKcal}</Text>
                     <Text>Dishes: {macro.dishes}</Text>
                     <View style={styles.MacroButtons}>
-                    <Pressable onPress={() => editMacro(macro)}>
+                    <Pressable onPress={() => editMacro(macro, "update")}>
                         <Entypo name="edit" size={27} color="black"></Entypo>
                     </Pressable>
-                    <Pressable onPress={() => editMacro(macro)}>
+                    <Pressable onPress={() => editMacro(macro, "toggle")}>
                         <Entypo name="bowl" size={27} color="black"></Entypo>
                     </Pressable>
-                    <Pressable onPress={() => editMacro(macro)}>
+                    <Pressable onPress={() => editMacro(macro, "remove")}>
                         <Entypo name="cross" size={27} color="black"></Entypo>
                     </Pressable>
                     </View>
