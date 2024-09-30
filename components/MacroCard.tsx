@@ -1,7 +1,6 @@
 import { Macro } from "../types/Interfaces";
 import { View, Text, Pressable, StyleSheet, Button } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
-import Macroservice from "../services/Macroservice";
 type MacroCardProps = {
     macro: Macro | undefined;
     editMacro: (macro: Macro) => void;
@@ -33,9 +32,17 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
                     <Text>{macro.nickname}</Text>
                     <Text>Kcal: {macro.energyKcal}</Text>
                     <Text>Dishes: {macro.dishes}</Text>
+                    <View style={styles.MacroButtons}>
                     <Pressable onPress={() => editMacro(macro)}>
-                        <Text>Click to edit</Text>
+                        <Entypo name="edit" size={27} color="black"></Entypo>
                     </Pressable>
+                    <Pressable onPress={() => editMacro(macro)}>
+                        <Entypo name="bowl" size={27} color="black"></Entypo>
+                    </Pressable>
+                    <Pressable onPress={() => editMacro(macro)}>
+                        <Entypo name="cross" size={27} color="black"></Entypo>
+                    </Pressable>
+                    </View>
                 </View>
             </Pressable>
         );
@@ -60,5 +67,10 @@ const styles = StyleSheet.create({
         backgroundColor: "grey",
         alignItems: "center",
         justifyContent: "center",
+    },
+    MacroButtons: {
+        display:"flex",
+        flexDirection: "row",
+        gap:10
     },
 });

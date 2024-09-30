@@ -15,14 +15,14 @@ export default function Macros() {
     ] = useState();
 
     useEffect(() => {
-        fetchMacros()
+        fetchMacros();
     }, []);
-    
-    const fetchMacros =  async () => {
-        console.log("fetchMacros")
-        let macroService = new Macroservice ();
-        setMacros(await macroService.fetchMacros())
-    }
+
+    const fetchMacros = async () => {
+        console.log("fetchMacros");
+        let macroService = new Macroservice();
+        setMacros(await macroService.fetchMacros());
+    };
     const openEditView = (macro: Macro | undefined) => {
         setEditingMakro(macro);
         setEditViewEnabled(true);
@@ -33,26 +33,26 @@ export default function Macros() {
     };
 
     const editMacro = (macro: Macro) => {
-        console.log("editMacro")
+        console.log("editMacro");
         openEditView(macro);
     };
 
     const saveMacro = (macro: Macro) => {
-        console.log("saveMacro")
-        let macroService : Macroservice = new Macroservice();
-        
+        console.log("saveMacro");
+        let macroService: Macroservice = new Macroservice();
+
         if (macro.macroKey === "" || macro.macroKey === undefined || macro.macroKey === null) {
             if (macro.nickname !== "") {
-                macroService.addMacro(macro)
+                macroService.addMacro(macro);
             } else {
                 return console.error("Information missing");
             }
-        }else {
-            macroService.updateMacro(macro)
+        } else {
+            macroService.updateMacro(macro);
         }
-        
+
         closeEditView();
-        fetchMacros()
+        fetchMacros();
     };
 
     const editViewIfEnabled = () => {
@@ -67,7 +67,7 @@ export default function Macros() {
                 </View>
             );
         } else {
-            return (<View/>);
+            return <View />;
         }
     };
 
@@ -75,15 +75,17 @@ export default function Macros() {
         <View style={styles.mainContainer}>
             <View style={styles.baseContainer}>
                 <Text>Here are all macros in your group</Text>
-                {macros.map((macro) => {
-                    return (
-                        <MacroCard
-                            key={macro.macroKey}
-                            macro={macro}
-                            editMacro={editMacro}
-                        ></MacroCard>
-                    );
-                })}
+                <View style={styles.macrosList}>
+                    {macros.map((macro) => {
+                        return (
+                            <MacroCard
+                                key={macro.macroKey}
+                                macro={macro}
+                                editMacro={editMacro}
+                            ></MacroCard>
+                        );
+                    })}
+                </View>
             </View>
             <MacroCard editMacro={editMacro} macro={undefined}></MacroCard>
             {editViewIfEnabled()}
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
         zIndex: 0,
     },
     baseContainer: {
+        padding: 20,
         position: "relative",
         pointerEvents: "auto",
         zIndex: -1,
@@ -120,4 +123,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    macrosList: {
+        marginTop:  10,
+        display: "flex",
+        flexDirection: "row",
+        gap: 15,
+        flexWrap: "wrap",
+        justifyContent: "space-around"
+    }
 });
