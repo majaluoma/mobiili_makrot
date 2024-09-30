@@ -1,151 +1,83 @@
-import {Makro, Resepti } from "../types/Interfaces";
+import {  Macro, Resepti } from "../types/Interfaces";
+import { getDatabase, ref, push, get, remove } from "firebase/database";
+import { app } from "../firebaseConfig";
 
+export type FbMacros = Record<string, Macro>;
 
 class Makropalvelu {
-
-    
-    async toggleLaskennasta (makro : Makro) : Promise<string> {
-        const makrojson = JSON.stringify(makro)
-        const vastaus = await fetch ("http://localhost:8080/toggle_makro", {
-            method: "POST", 
-            mode: "cors", 
-            cache: "no-cache", 
-            credentials: "same-origin", 
-            body: makrojson,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        const viesti = await vastaus.json();
-        return viesti.message
+    database;
+    constructor() {
+        this.database = getDatabase(app);
     }
 
-    async haeMakronVakioateriat (makro : Makro) {
-        try {
-            const makrojson = JSON.stringify(makro)
-            const vastaus = await fetch ("http://localhost:8080/vakioateriat", {
-                method: "POST", 
-                mode: "cors", 
-                cache: "no-cache", 
-                credentials: "same-origin", 
-                body: makrojson,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            const json: Resepti [] = await vastaus.json();
-            return json
-        } catch (e) {
-            throw (`Reseptien hakemisessa tapahtui virhe: ${e}`);
-        }
+    /** Includes or excludes Macro from macro calculations
+     *
+     */
+    async toggleLaskennasta(makro: Macro): Promise<string> {
+        return "not implemented";
     }
 
-     //lisaaMakroTietokantaan - lisää tai muuttaa tietokannassa olevia tietoja nimimerkin pohjalta.
-     async lisaaMakroTietokantaan (makro : Makro) : Promise<string> {
-        if (
-            makro.nimimerkki !== "" &&
-            makro.aterioita > 0 &&
-            makro.sokerit > 0 &&
-            makro.suolat > 0 &&
-            makro.energiaKcal > 0 &&
-            makro.rasvat > 0 &&
-            makro.proteiinit > 0 &&
-            makro.hiilihydraatit > 0 &&
-            makro.kuidut > 0 &&
-            makro.tyydyttyneetRasvat > 0
-        ) {
-            
-            const makrojson = JSON.stringify(makro)
-            const response = await fetch ("http://localhost:8080/lisaa_makro", {
-                method: "POST", 
-                mode: "cors", 
-                cache: "no-cache", 
-                credentials: "same-origin", 
-                body: makrojson,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            const viesti = await response.json();
-            return (viesti.message)
-        
-    
-            
+    /** lisää tai muuttaa tietokannassa olevia tietoja nimimerkin pohjalta.
+     *
+     */
+
+    async addMacro(macro: Macro): Promise<string> {
+        console.log("addMacro")
+        if (macro.nimimerkki !== "") {
+            return push(ref(this.database, "/macros"), macro).then((ref) => {
+                return ref.toString();
+            });
         } else {
-            return("Lisää kaikki tiedot");
+            return "Lisää kaikki tiedot";
         }
     }
 
-    //lisaaMakroTietokantaan - lisää tai muuttaa tietokannassa olevia tietoja nimimerkin pohjalta.
-    async vakioateriaksi (makro : Makro, resepti : Resepti) : Promise<string> {
-        const makrojson = JSON.stringify({makro, resepti})
-        const response = await fetch ("http://localhost:8080/lisaa_vakioateriaksi", {
-            method: "POST", 
-            mode: "cors", 
-            cache: "no-cache", 
-            credentials: "same-origin", 
-            body: makrojson,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        const viesti = await response.json();
-        return (viesti.message)
+    async removeMacro(macro: Macro): Promise<string> {
+
+        return "Not implemented";
     }
 
-    async poistaMakro (makro : Makro) :  Promise<string> {
-        const makrojson = JSON.stringify(makro)
-        const response = await fetch ("http://localhost:8080/poista_makro", {
-            method: "POST", 
-            mode: "cors", 
-            cache: "no-cache", 
-            credentials: "same-origin", 
-            body: makrojson,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        const viesti = await response.json();
-        
-        return viesti.message
-    }
-
-    async poistaVakioateria (resepti : Resepti, makroId : number) :  Promise<string> {
-        const makrojson = JSON.stringify({resepti, makroId})
-        const response = await fetch ("http://localhost:8080/poista_vakioateria", {
-            method: "POST", 
-            mode: "cors", 
-            cache: "no-cache", 
-            credentials: "same-origin", 
-            body: makrojson,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        const viesti = await response.json();
-        
-        return viesti.message
-    }
-
-    async haeMakrot  () : Promise<Makro []> {
+    async fetchMacros(): Promise<Macro[]> {
+        console.log("fetchMacros")
+        const macroRef = ref(this.database, "/macros");
         try {
-            const vastaus = await fetch("http://localhost:8080/kaikki_makrot");
-            const json: Makro[] = await vastaus.json();
-            return json
-        } catch (e) {
-            throw (`Reseptien hakemisessa tapahtui virhe: ${e}`);
+            const res = await get(macroRef);
+            const data = res.val() as FbMacros;
+            
+            if (data) {
+                return this.transformToMacros(data);
+            } else {
+                return []
+            }
+        } catch (error) {
+            console.error("Error fetching macros:", error);
+            return [];
         }
     }
 
-    async haeMakrotLaskennassa  () : Promise<Makro []> {
+
+
+
+    transformToMacros  (data : FbMacros) : Macro[] {
+        let dataArray = Object.entries(data)
+        const macros : Macro [] = [];
+        dataArray.forEach((dataPiece) => {
+            let key = dataPiece[0];
+            let macro = dataPiece[1];
+            macros.push({...macro, makroId:key})
+        });
+        return macros
+    }
+
+    async haeMakrotLaskennassa(): Promise<Macro[]> {
         try {
             const vastaus = await fetch("http://localhost:8080/makrot_laskennassa");
-            const json: Makro[] = await vastaus.json();
+            const json: Macro[] = await vastaus.json();
             console.log(`Haettiin Makrojen tiedot  ${json.length} makrosta`);
-            return json
+            return json;
         } catch (e) {
-            throw (`Makrojen hakemisessa tapahtui virhe: ${e}`);
+            throw `Makrojen hakemisessa tapahtui virhe: ${e}`;
         }
     }
-
-} export default Makropalvelu
+}
+export default Makropalvelu;

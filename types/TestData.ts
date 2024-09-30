@@ -1,4 +1,4 @@
-import { FinavianRuokaTiedot, Makro, Resepti } from "./Interfaces";
+import { FinavianRuokaTiedot, Macro, Resepti } from "./Interfaces";
 
 const reseptit: Resepti[] = [
     {
@@ -29,7 +29,7 @@ const reseptit: Resepti[] = [
 
 
 // Test Data for Makro
-const makrot: Makro[] = [
+const makrot: Macro[] = [
     {
       makroId: 1,
       nimimerkki: "JohnDoe",

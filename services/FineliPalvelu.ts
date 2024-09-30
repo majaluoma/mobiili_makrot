@@ -1,7 +1,6 @@
 
 import log from "./log";
-import { FinavianRuokaTiedot, Makro, Resepti } from "../types/Interfaces";
-import Makropalvelu from "./Makropalvelu";
+import { FinavianRuokaTiedot, Resepti } from "../types/Interfaces";
 import { TestIngredientAPIdata as testIngredientAPIdata } from "../types/TestData";
 
 class FineliPalvelu {
@@ -88,26 +87,6 @@ class FineliPalvelu {
             return [];
         }
     }
-
-    async haeMakrojenVakioRuokaAineet(makroData: Makro[]): Promise<Map<number, FinavianRuokaTiedot>> {
-        const ruokaAineet : Map<number, FinavianRuokaTiedot> = new Map();
-        const makropalvelu : Makropalvelu = new Makropalvelu();
-
-        for (let i = 0; i < makroData.length; i++) {
-            const makro = makroData[i];
-            const makronAteriat = await makropalvelu.haeMakronVakioateriat(makro)
-            for (let i = 0; i < makronAteriat.length; i++) {
-                const ateria = makronAteriat[i];
-                const vakionRuokaAineet =  await this.haeReseptinRuokaAineet(ateria);
-                vakionRuokaAineet.forEach((ruokaAine, id)=> {
-                    ruokaAineet.set(id, ruokaAine)
-                }) 
-                
-            }
-        }
-        return ruokaAineet
-    }
-    
 
     muutaSuola (tieto : FinavianRuokaTiedot) {
         return {...tieto, salt: tieto.salt/100}

@@ -31,8 +31,8 @@ export interface RuokaAineMaara {
     maara : number
 }
 
-export interface Makro extends MakroInterface {
-    makroId: number;
+export interface Macro extends MakroInterface {
+    makroId: string;
     nimimerkki: string;
     aterioita : number
     laskennassa : 0| 1
@@ -128,4 +128,4 @@ interface PreparationMethod extends FinaviaBasicDataStructure{
 }
 
 //Luotu tyypitys finavian dietteihin.
-type SpecialDiet = "SOYAFREE" |"UNSWEET" |"MILKFREE" |"LACSFREE" |"SALTFREE" |"LACVEGE" |"VEGAN" |"GLUTFREE" |"LACOVEGE" |"EGGFREE"
+type SpecialDiet = "SOYAFREE" |"UNSWEET" |"MILKFREE" |"LACSFREE" |"SALTFREE" |"LACVEGE" |"VEGAN" |"GLUTFREE" |"LACOVEGE" |"EGGFREE";
