@@ -1,18 +1,3 @@
-interface MakrojaFinaviaVastaavuus {
-    finavia: keyof FinavianMakrot;
-    makro: keyof MakroInterface;
-}
-
-export const vastaavuudet: MakrojaFinaviaVastaavuus[] = [
-    { finavia: "energyKcal", makro: "energiaKcal" },
-    { finavia: "fat", makro: "rasvat" },
-    { finavia: "fiber", makro: "kuidut" },
-    { finavia: "protein", makro: "proteiinit" },
-    { finavia: "carbohydrate", makro: "hiilihydraatit" },
-    { finavia: "salt", makro: "suolat" },
-    { finavia: "saturatedFat", makro: "tyydyttyneetRasvat" },
-];
-
 export interface Resepti {
     reseptiId : number
     resepti : string
@@ -28,29 +13,18 @@ export type ReseptiTyyppi = {
 export interface RuokaAineMaara {
     ruokaAineId : number
     ruokaAineMaaraId : number
-    maara : number
+    amount : number
 }
 
-export interface Macro extends MakroInterface {
-    makroId: string;
-    nimimerkki: string;
-    aterioita : number
-    laskennassa : 0| 1
+export interface Macro extends MacroInterface {
+    macroKey: string;
+    nickname: string;
+    dishes : number
+    inUse : 0| 1
     
 }
 
-export interface MakroInterface {
-    sokerit : number;
-    suolat : number;
-    energiaKcal : number;
-    rasvat : number;
-    proteiinit : number;
-    hiilihydraatit : number;
-    kuidut : number;
-    tyydyttyneetRasvat : number;
-}
-
-export interface ReseptiMakro extends MakroInterface {
+export interface ReseptiMakro extends MacroInterface {
     reseptiId: number;
 }
 
@@ -59,20 +33,25 @@ export interface Suunnitelma {
     annoksia : number
     makrot : Map<number, number>
 }
-// Seuraava rajapinta mukailee Finavian tietoja
-export interface FinavianMakrot {
+
+interface MacroInterface {
     sugar : number;
     salt : number;
     energyKcal : number;
-    energy : number;
     fat : number;
     protein : number;
     carbohydrate : number;
+    fiber : number;
+    saturatedFat : number;
+
+}
+
+// Seuraava rajapinta mukailee Finavian tietoja
+export interface FinavianMakrot extends MacroInterface {
+    energy : number;
     alcohol : number;
     organicAcids : number;
     sugarAlcohol : number;
-    fiber : number;
-    saturatedFat : number;
 } 
 
 // Seuraava rajapinta mukailee Finavian tietoja

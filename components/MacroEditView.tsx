@@ -46,7 +46,7 @@ export default function MacroEditView({ macro, closeView, saveEditedMacro }: Mac
     const macroEditInputs = () => {
         let keys: Array<keyof Macro> = Object.keys(editedMacro) as Array<keyof Macro>;
         return keys.map((key,index) => {
-            if (key  !== "makroId") {
+            if (key  !== "macroKey") {
                 return (
                     <View key={`edit_${key}_${index}`} style={styles.row}>
                         <Text>{key}: </Text>

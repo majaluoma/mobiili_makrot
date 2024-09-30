@@ -3,12 +3,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import MacroCard from "./MacroCard";
 import MacroEditView from "./MacroEditView";
-import Makropalvelu from "../services/Makropalvelu";
+import Macroservice from "../services/Macroservice";
 import { Macro } from "../types/Interfaces";
 
 export default function Macros() {
     const [macros, setMacros] = useState([] as Macro[]);
-    const [editViewEnabled, setEditViewEnalbed] = useState(false);
+    const [editViewEnabled, setEditViewEnabled] = useState(false);
     const [editingMakro, setEditingMakro]: [
         undefined | Macro,
         Dispatch<SetStateAction<undefined | Macro>>
@@ -20,15 +20,15 @@ export default function Macros() {
     
     const fetchMacros =  async () => {
         console.log("fetchMacros")
-        let macroService = new Makropalvelu ();
+        let macroService = new Macroservice ();
         setMacros(await macroService.fetchMacros())
     }
     const openEditView = (macro: Macro | undefined) => {
         setEditingMakro(macro);
-        setEditViewEnalbed(true);
+        setEditViewEnabled(true);
     };
     const closeEditView = () => {
-        setEditViewEnalbed(false);
+        setEditViewEnabled(false);
         setEditingMakro(undefined);
     };
 
@@ -39,20 +39,18 @@ export default function Macros() {
 
     const saveMacro = (macro: Macro) => {
         console.log("saveMacro")
-        const newMacroList: Macro[] = [];
-
-        if (macro.makroId === "" || macro.makroId === undefined || macro.makroId === null) {
-            newMacroList.push(...macros, macro);
-            let makropalvelu : Makropalvelu = new Makropalvelu()
-            makropalvelu.addMacro(macro)
-        }
-        macros.forEach((mOld) => {
-            if (mOld.makroId === macro.makroId) {
-                newMacroList.push(macro);
+        let macroService : Macroservice = new Macroservice();
+        
+        if (macro.macroKey === "" || macro.macroKey === undefined || macro.macroKey === null) {
+            if (macro.nickname !== "") {
+                macroService.addMacro(macro)
             } else {
-                newMacroList.push(mOld);
+                return console.error("Information missing");
             }
-        });
+        }else {
+            macroService.updateMacro(macro)
+        }
+        
         closeEditView();
         fetchMacros()
     };
@@ -80,7 +78,7 @@ export default function Macros() {
                 {macros.map((macro) => {
                     return (
                         <MacroCard
-                            key={macro.makroId}
+                            key={macro.macroKey}
                             macro={macro}
                             editMacro={editMacro}
                         ></MacroCard>
