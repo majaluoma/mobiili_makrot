@@ -1,7 +1,7 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
-import { FinavianRuokaTiedot } from "../../types/Interfaces";
+import { Ingredient } from "../../types/Interfaces";
 
-export default function Item({ ingredient, callback }: { ingredient: FinavianRuokaTiedot, callback : (ingredient : FinavianRuokaTiedot) => void }) {
+export default function IngredientResult({ ingredient, callback }: { ingredient: Ingredient, callback : (ingredient : Ingredient) => void }) {
 
     
 

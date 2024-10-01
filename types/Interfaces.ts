@@ -1,39 +1,3 @@
-export interface Resepti {
-    reseptiId : number
-    resepti : string
-    tyyppi : ReseptiTyyppi
-    ruokaAineet : RuokaAineMaara []
-}
-
-export type ReseptiTyyppi = {
-    reseptiTyyppiId : number;
-    reseptiTyyppi : string;
-}
-
-export interface RuokaAineMaara {
-    ruokaAineId : number
-    ruokaAineMaaraId : number
-    amount : number
-}
-
-export interface Macro extends MacroInterface {
-    macroKey: string;
-    nickname: string;
-    dishes : number;
-    inUse : boolean;
-    
-}
-
-export interface ReseptiMakro extends MacroInterface {
-    reseptiId: number;
-}
-
-export interface Suunnitelma {
-    resepti : Resepti;
-    annoksia : number
-    makrot : Map<number, number>
-}
-
 interface MacroInterface {
     sugar : number;
     salt : number;
@@ -43,11 +7,18 @@ interface MacroInterface {
     carbohydrate : number;
     fiber : number;
     saturatedFat : number;
+}
 
+export interface Macro extends MacroInterface {
+    macroKey: string;
+    nickname: string;
+    dishes : number;
+    inUse : boolean;
+    profileImage: string;
 }
 
 // Seuraava rajapinta mukailee Finavian tietoja
-export interface FinavianMakrot extends MacroInterface {
+export interface FinaviasExtraMacros extends MacroInterface {
     energy : number;
     alcohol : number;
     organicAcids : number;
@@ -55,7 +26,7 @@ export interface FinavianMakrot extends MacroInterface {
 } 
 
 // Seuraava rajapinta mukailee Finavian tietoja
-export interface FinavianRuokaTiedot extends FinaviaBasicDataStructure, FinavianMakrot {
+export interface Ingredient extends FinaviaBasicDataStructure, FinaviasExtraMacros {
     id:number,
     type: Type
     name : Name
@@ -110,3 +81,31 @@ interface PreparationMethod extends FinaviaBasicDataStructure{
 type SpecialDiet = "SOYAFREE" |"UNSWEET" |"MILKFREE" |"LACSFREE" |"SALTFREE" |"LACVEGE" |"VEGAN" |"GLUTFREE" |"LACOVEGE" |"EGGFREE";
 
 export type DatabaseProcedure = "update" | "remove" | "add" | "toggle";
+
+/*
+export interface Resepti {
+    reseptiId : number
+    resepti : string
+    tyyppi : ReseptiTyyppi
+    ruokaAineet : RuokaAineMaara []
+}
+
+export type ReseptiTyyppi = {
+    reseptiTyyppiId : number;
+    reseptiTyyppi : string;
+}
+export interface ReseptiMakro extends MacroInterface {
+    reseptiId: number;
+}
+export interface Suunnitelma {
+    resepti : Resepti;
+    annoksia : number
+    makrot : Map<number, number>
+}
+
+export interface RuokaAineMaara {
+    ruokaAineId : number
+    ruokaAineMaaraId : number
+    amount : number
+}
+    */

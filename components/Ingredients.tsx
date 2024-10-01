@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import {  useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -14,28 +14,33 @@ import {
 import { z } from "zod";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FineliPalvelu from "../services/FineliPalvelu";
-import { FinavianRuokaTiedot } from "../types/Interfaces";
+import { Ingredient, Macro } from "../types/Interfaces";
 import log from "../services/log";
 import SearchBar from "./SearchBar";
+import Entypo from "@expo/vector-icons/Entypo";
+import { useKeepAwake, activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import { TestIngredientAPIdata } from "../types/TestData";
+import MacroPortionList from "./MacroPortionList";
+import Macroservice from "../services/Macroservice";
 
 const numberSchema = z.number();
 
 type IngredientAmount = {
-    ingredient: string;
+    ingredient: Ingredient | null;
     amount: number;
 };
 export default function Ingredients() {
     const baseIngredient: IngredientAmount = {
-        ingredient: "peruna",
+        ingredient: TestIngredientAPIdata[0],
         amount: 0,
     };
     const [ingredients, setIngredients] = useState([baseIngredient]);
-
+    const [keepAwakeColor, setKeepAwakeColor] = useState<"black" | "green">("black")
     const [keyword, setKeyword] = useState("");
-    const [APIingredients, setAPIingredients] = useState([] as FinavianRuokaTiedot[]);
-    const [searchBarToggled, setSearchBarToggled] =useState(false)
-    const [ingredientRow, setIngredientRow] = useState(0)
-
+    const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
+    const [searchBarToggled, setSearchBarToggled] = useState(false);
+    const [ingredientRow, setIngredientRow] = useState(0);
+    const [macrosInUse, setMacrosInUse] = useState<Macro []> ([])
     const changeAmount = (input: NativeSyntheticEvent<TextInputChangeEventData>, i: number) => {
         const data = input.nativeEvent.text;
         try {
@@ -50,7 +55,17 @@ export default function Ingredients() {
             console.log("not verified");
         }
     };
+    
+    useEffect(() => {
+        fetchMacros();
+    }, []);
 
+    const fetchMacros = async () => {
+        console.log("fetchMacros");
+        let macroService = new Macroservice();
+        setMacrosInUse(await macroService.fetchMacrosInUse());
+    };
+    
     const fetchIngredients = async (keyword: string) => {
         const fineliPalvelu = new FineliPalvelu();
         const ingredients = await fineliPalvelu.keywordFetch(keyword);
@@ -67,7 +82,7 @@ export default function Ingredients() {
 
     const addIngredient = () => {
         let newIngredients = [...ingredients];
-        newIngredients.push({ ingredient: "", amount: 0 });
+        newIngredients.push({ ingredient: null, amount: 0 });
         setIngredients(newIngredients);
     };
 
@@ -91,25 +106,36 @@ export default function Ingredients() {
         return total;
     };
 
+    const calculateKcal = () => {
+        let total: number = 0;
+        for (let i = 0; i < ingredients.length; i++) {
+            const ingredient = ingredients[i];
+            if (ingredient.ingredient !== null) {
+                total += ingredient.ingredient?.energyKcal * ingredient.amount/100
+            }
+        }
+        return total;
+    };
+
     const toggleSearchBar = () => {
         if (searchBarToggled) {
-            setSearchBarToggled(false)
+            setSearchBarToggled(false);
         } else {
-            setSearchBarToggled(true)
+            setSearchBarToggled(true);
         }
-    }
+    };
 
-    const ingredientChosen = (ingredient: FinavianRuokaTiedot) => {
-        const data = ingredient.name.fi;
+    const ingredientChosen = (ingredient: Ingredient) => {
+        const data = ingredient;
         let newIngredients = [...ingredients];
         newIngredients[ingredientRow].ingredient = data;
         setIngredients(newIngredients);
         toggleSearchBar();
-        console.log(data + " "+ ingredientRow)
+        console.log(data + " " + ingredientRow);
     };
 
     const searchBarIfToggled = () => {
-        if(searchBarToggled) {
+        if (searchBarToggled) {
             return (
                 <View style={styles.overlayContainer}>
                     <SearchBar closeView={toggleSearchBar} callback={ingredientChosen}></SearchBar>
@@ -120,14 +146,20 @@ export default function Ingredients() {
 
     const ingredientFields = () => {
         return (
-            <View>
+            <View style={styles.ingredientsList}>
+                <Text>Add ingredients and weight of each</Text>
                 {ingredients.map((ingredient, i) => {
                     return (
                         <View key={i} style={styles.row}>
-                            <Pressable onPress={() => {toggleSearchBar(); setIngredientRow(i)}}>
+                            <Pressable
+                                onPress={() => {
+                                    toggleSearchBar();
+                                    setIngredientRow(i);
+                                }}
+                            >
                                 <View style={styles.input}>
-                                    <Text>{ingredient.ingredient}</Text>
-                                    </View>
+                                    <Text>{ingredient.ingredient !==null? ingredient.ingredient.name.en :""}</Text>
+                                </View>
                             </Pressable>
                             <TextInput
                                 id={"amount_" + i.toString()}
@@ -137,7 +169,7 @@ export default function Ingredients() {
                                 keyboardType="numeric"
                             ></TextInput>
                             <Pressable onPress={() => removeThisIngredient(i)}>
-                                <FontAwesome name="remove" size={24} color="black" />
+                                <FontAwesome name="remove" size={24} color={"black"} />
                             </Pressable>
                             <FlatList
                                 data={APIingredients}
@@ -150,24 +182,39 @@ export default function Ingredients() {
         );
     };
 
-    const Item = ({ ingredient }: { ingredient: FinavianRuokaTiedot }) => (
+    const keepOpen = () => {
+        console.debug("keepOpen")
+        if(keepAwakeColor === "black") {
+            setKeepAwakeColor("green")
+            activateKeepAwakeAsync();
+        }else {
+            deactivateKeepAwake();
+            setKeepAwakeColor("black")
+        }
+    }
+
+    const Item = ({ ingredient }: { ingredient: Ingredient }) => (
         <View>
-            <Text>{ingredient.name.fi}</Text>
+            <Text>{ingredient.name.en}</Text>
         </View>
     );
 
     return (
         <View style={styles.mainContainer}>
             {searchBarIfToggled()}
-
+            <Pressable style={styles.eyeIcon} onPress={keepOpen}>
+                <Entypo name="eye" size={50} color={keepAwakeColor}></Entypo>
+            </Pressable>
             <View style={styles.baseContainer}>
-                <Text>Add ingredients and weight of each</Text>
                 {ingredientFields()}
-                <Button onPress={addIngredient} title="+"></Button>
-                <Text>Total weight: {calculateWeight()}</Text>
-                <Text>Total kilocalories:</Text>
-                <Text>Total portions:</Text>
-                <StatusBar style="auto" />
+                <View style={styles.bottomInfo}>
+                    <Button onPress={addIngredient} title="Add ingredient"></Button>
+                    <Text>Total kg: {calculateWeight()}</Text>
+                    <Text>Total kcal: {calculateKcal()}</Text>
+                    <Text>Total portions:</Text>
+                    <MacroPortionList macros={macrosInUse}></MacroPortionList>
+                    <StatusBar style="auto" />
+                </View>
             </View>
         </View>
     );
@@ -183,22 +230,41 @@ const styles = StyleSheet.create({
         bottom: 0,
         zIndex: 0,
     },
+    bottomInfo: {
+        alignItems: "center",
+    },
+    eyeIcon: {
+        position: "absolute",
+        bottom: 100,
+        left: 20,
+    },
+    ingredientsList: {
+        marginTop: 20,
+        height: 500,
+        display: "flex",
+        justifyContent: "flex-start",
+        flexDirection: "column",
+        gap: 10,
+    },
     baseContainer: {
+        top: 10,
         position: "relative",
         pointerEvents: "auto",
         zIndex: -1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-start",
     },
     mainContainer: {
         position: "relative",
         paddingBottom: 70,
-        flex: 1,
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
     row: {
         flexDirection: "row",
-        flex: 1,
+
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "space-around",
@@ -214,7 +280,7 @@ const styles = StyleSheet.create({
         borderStyle: "solid",
         borderColor: "black",
         backgroundColor: "#fff",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
     },
 });

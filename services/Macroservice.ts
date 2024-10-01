@@ -1,4 +1,4 @@
-import {  Macro, Resepti } from "../types/Interfaces";
+import {  Macro } from "../types/Interfaces";
 import { getDatabase, ref, push, get, remove, update } from "firebase/database";
 import { app } from "../firebaseConfig";
 
@@ -10,12 +10,6 @@ class Macroservice {
         this.database = getDatabase(app);
     }
 
-    /** Includes or excludes Macro from macro calculations
-     *
-     */
-    async toggleLaskennasta(makro: Macro): Promise<string> {
-        return "not implemented";
-    }
 
     /** lisää tai muuttaa tietokannassa olevia tietoja nimimerkin pohjalta.
      *
@@ -98,9 +92,14 @@ class Macroservice {
         return macros
     }
 
-    async fetchUsedMacros(): Promise<Macro[]> {
-        console.log("not implemented")
-        return []
+    async fetchMacrosInUse(): Promise<Macro[]> {
+        const macros = await  this.fetchMacros();
+        const filtered = macros.filter((macro) => {
+            if (macro.inUse) {
+                return macro
+            }
+        })
+        return filtered;
     }
 }
 export default Macroservice;

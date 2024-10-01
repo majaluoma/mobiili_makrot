@@ -1,31 +1,5 @@
-import { FinavianRuokaTiedot, Macro, Resepti } from "./Interfaces";
+import { Ingredient, Macro } from "./Interfaces";
 
-const reseptit: Resepti[] = [
-    {
-      reseptiId: 1,
-      resepti: "Spaghetti Bolognese",
-      tyyppi: {
-        reseptiTyyppiId: 101,
-        reseptiTyyppi: "Main Course",
-      },
-      ruokaAineet: [
-        { ruokaAineId: 1, ruokaAineMaaraId: 11, amount: 150 },
-        { ruokaAineId: 2, ruokaAineMaaraId: 12, amount: 100 },
-      ],
-    },
-    {
-      reseptiId: 2,
-      resepti: "Vegetable Soup",
-      tyyppi: {
-        reseptiTyyppiId: 102,
-        reseptiTyyppi: "Appetizer",
-      },
-      ruokaAineet: [
-        { ruokaAineId: 3, ruokaAineMaaraId: 13, amount: 200 },
-        { ruokaAineId: 4, ruokaAineMaaraId: 14, amount: 50 },
-      ],
-    },
-  ];
 
 
 // Test Data for Makro
@@ -34,7 +8,8 @@ const makrot: Macro[] = [
       macroKey: "1",
       nickname: "JohnDoe",
       dishes: 3,
-      inUse: 1,
+      inUse: true,
+      profileImage: "",
       sugar: 30,
       salt: 5,
       energyKcal: 450,
@@ -48,7 +23,8 @@ const makrot: Macro[] = [
       macroKey: "2",
       nickname: "JaneDoe",
       dishes: 2,
-      inUse: 0,
+      inUse: true,
+      profileImage: "",
       sugar: 20,
       salt: 3,
       energyKcal: 300,
@@ -62,9 +38,9 @@ const makrot: Macro[] = [
   
 
 // Test Data for FinavianRuokaTiedot
-const TestIngredientAPIdata: FinavianRuokaTiedot[] = [
+const TestIngredientAPIdata: Ingredient[] = [
     {
-      id: 101,
+      id: -1,
       code: "R101",
       description: { fi: "Kuvaus suomeksi", en: "Description in English", sv: "Beskrivning på svenska" },
       abbreviation: { fi: "Lyhenne", en: "Abbreviation", sv: "Förkortning" },
@@ -111,7 +87,7 @@ const TestIngredientAPIdata: FinavianRuokaTiedot[] = [
       saturatedFat: 3,
     },
     {
-      id: 102,
+      id: -2,
       code: "R102",
       description: { fi: "Toinen kuvaus", en: "Second description", sv: "Andra beskrivningen" },
       abbreviation: { fi: "L1", en: "A1", sv: "B1" },
@@ -159,4 +135,4 @@ const TestIngredientAPIdata: FinavianRuokaTiedot[] = [
     },
   ];
   
-  export { reseptit, makrot, TestIngredientAPIdata };
+  export { makrot, TestIngredientAPIdata };

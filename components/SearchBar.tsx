@@ -13,16 +13,16 @@ import {
 import { z } from "zod";
 
 import FineliPalvelu from "../services/FineliPalvelu";
-import { FinavianRuokaTiedot } from "../types/Interfaces";
+import { Ingredient } from "../types/Interfaces";
 import log from "../services/log";
-import Ingredient from "./listItems/Ingredient";
+import IngredientResult from "./listItems/IngredientResult";
 
 const stringSchema = z.string();
 
-export default function SearchBar({closeView, callback} : {closeView : ()=> void, callback : (ingredient : FinavianRuokaTiedot)=> void})  {
+export default function SearchBar({closeView, callback} : {closeView : ()=> void, callback : (ingredient : Ingredient)=> void})  {
 
     const [keyword, setKeyword] = useState("");
-    const [APIingredients, setAPIingredients] = useState([] as FinavianRuokaTiedot[]);
+    const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
 
     const fetchIngredients = async (keyword: string) => {
         const fineliPalvelu = new FineliPalvelu();
@@ -51,7 +51,7 @@ export default function SearchBar({closeView, callback} : {closeView : ()=> void
                 <FlatList
                     data={APIingredients}
                     renderItem={({ item }) => (
-                        <Ingredient ingredient={item} callback={callback}></Ingredient>
+                        <IngredientResult ingredient={item} callback={callback}></IngredientResult>
                     )}
                 ></FlatList>
             </View>

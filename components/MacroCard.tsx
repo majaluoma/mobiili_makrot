@@ -7,12 +7,21 @@ type MacroCardProps = {
 };
 
 export default function MacroCard({ macro, editMacro }: MacroCardProps) {
+    const inUseColor = ()=> {
+        if (macro?.inUse) {
+            return "green"
+        }else {
+            return "red"
+        }
+        
+    }
     const newMacro = () => {
         let newMacro: Macro = {
             macroKey: "",
             nickname: "",
             dishes: 0,
             inUse: true,
+            profileImage: "https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236_640.png",
             sugar: 0,
             salt: 0,
             energyKcal: 0,
@@ -37,7 +46,7 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
                         <Entypo name="edit" size={27} color="black"></Entypo>
                     </Pressable>
                     <Pressable onPress={() => editMacro(macro, "toggle")}>
-                        <Entypo name="bowl" size={27} color="black"></Entypo>
+                        <Entypo name="bowl" size={27} color={inUseColor()}></Entypo>
                     </Pressable>
                     <Pressable onPress={() => editMacro(macro, "remove")}>
                         <Entypo name="cross" size={27} color="black"></Entypo>

@@ -1,6 +1,6 @@
 
 import log from "./log";
-import { FinavianRuokaTiedot, Resepti } from "../types/Interfaces";
+import { Ingredient, Resepti } from "../types/Interfaces";
 import { TestIngredientAPIdata as testIngredientAPIdata } from "../types/TestData";
 
 class FineliPalvelu {
@@ -20,8 +20,8 @@ class FineliPalvelu {
        return hakuehdot;
     }
 
-    filterDishesAway(ruokaTiedot : FinavianRuokaTiedot[]) {
-        let filtered : FinavianRuokaTiedot [] = []
+    filterDishesAway(ruokaTiedot : Ingredient[]) {
+        let filtered : Ingredient [] = []
         ruokaTiedot.forEach( (ruokatieto) => {
             if (ruokatieto.type.code!=="DISH") {
                 filtered.push(ruokatieto)
@@ -30,7 +30,7 @@ class FineliPalvelu {
        return filtered;
     }
 
-    async keywordFetch(keyword :  string) : Promise<FinavianRuokaTiedot[]> {
+    async keywordFetch(keyword :  string) : Promise<Ingredient[]> {
         log.debug(`Searching with keyword: ${keyword}`)
         const hakuehdot : string = `?q=*${keyword}*` + this.addFilters();
         const ruokaTiedot = await this.fetchMany(hakuehdot)
@@ -38,11 +38,11 @@ class FineliPalvelu {
     }
 
     async  haeReseptinRuokaAineet  (resepti :  Resepti ) {
-        const ingredients: FinavianRuokaTiedot [] = [];
+        const ingredients: Ingredient [] = [];
         if (this.fakeData) {
             return testIngredientAPIdata;
         }
-        const lupaukset : Promise<FinavianRuokaTiedot> [] = [];
+        const lupaukset : Promise<Ingredient> [] = [];
         for (let i = 0; i < resepti.ruokaAineet.length; i++) {
             const ruokaAine = resepti.ruokaAineet[i];
             lupaukset.push(this.haeYksi(ruokaAine.ruokaAineId.toString()))
@@ -53,16 +53,16 @@ class FineliPalvelu {
         return ingredients
     }
 
-    private async haeYksi (hakuehdot :string) : Promise<FinavianRuokaTiedot> {
+    private async haeYksi (hakuehdot :string) : Promise<Ingredient> {
         if (this.fakeData) {
             return testIngredientAPIdata[1];
         }
         const vastaus = await fetch(`${this.osoite}${hakuehdot}`);
-        const json: FinavianRuokaTiedot = this.muutaSuola(await vastaus.json());
+        const json: Ingredient = this.muutaSuola(await vastaus.json());
         return json;
     }
 
-    private async fetchMany (keyword :string) : Promise<FinavianRuokaTiedot[]> {
+    private async fetchMany (keyword :string) : Promise<Ingredient[]> {
         if (this.fakeData) {
             return testIngredientAPIdata;
         }
@@ -75,8 +75,8 @@ class FineliPalvelu {
                 throw new Error(`status ${response.status}, body: ${await response.text()}`)
             }
             const json = await response.json();
-            const salted: FinavianRuokaTiedot [] = this.muutaSuolat(json);
-            let ingredients: FinavianRuokaTiedot[] = []
+            const salted: Ingredient [] = this.muutaSuolat(json);
+            let ingredients: Ingredient[] = []
             salted.forEach((ruokatieto) => {
                 ingredients.push(ruokatieto)
             })
@@ -88,12 +88,12 @@ class FineliPalvelu {
         }
     }
 
-    muutaSuola (tieto : FinavianRuokaTiedot) {
+    muutaSuola (tieto : Ingredient) {
         return {...tieto, salt: tieto.salt/100}
     }
 
-    muutaSuolat (tiedot : FinavianRuokaTiedot []) {
-        const uudetTiedot : FinavianRuokaTiedot [] =  []
+    muutaSuolat (tiedot : Ingredient []) {
+        const uudetTiedot : Ingredient [] =  []
         tiedot.forEach(tieto => {
             uudetTiedot.push  ({...tieto, salt: tieto.salt/100})
         })
