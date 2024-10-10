@@ -32,13 +32,21 @@ export default function Macros() {
         setEditingMakro(undefined);
     };
 
-    const editMacro = (macro: Macro, procedure : DatabaseProcedure) => {
+    const editMacro = (macro: Macro, procedure: DatabaseProcedure) => {
         console.log("editMacro");
         switch (procedure) {
-            case "update": openEditView(macro); break;
-            case "remove": deleteMacro(macro) ; break;
-            case "add": openEditView(macro); break;
-            case "toggle": saveMacro({...macro, inUse:!macro.inUse}); break;
+            case "update":
+                openEditView(macro);
+                break;
+            case "remove":
+                deleteMacro(macro);
+                break;
+            case "add":
+                openEditView(macro);
+                break;
+            case "toggle":
+                saveMacro({ ...macro, inUse: !macro.inUse });
+                break;
         }
     };
 
@@ -120,6 +128,7 @@ const styles = StyleSheet.create({
         position: "relative",
         pointerEvents: "auto",
         zIndex: -1,
+        alignItems: "center",
     },
     mainContainer: {
         position: "relative",
@@ -136,11 +145,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     macrosList: {
-        marginTop:  10,
+        maxWidth:275,
+        marginTop: 10,
         display: "flex",
         flexDirection: "row",
         gap: 15,
         flexWrap: "wrap",
-        justifyContent: "space-around"
-    }
+        justifyContent: "flex-start",
+    },
 });

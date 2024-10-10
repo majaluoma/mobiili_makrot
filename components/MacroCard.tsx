@@ -1,20 +1,20 @@
 import { DatabaseProcedure, Macro } from "../types/Interfaces";
 import { View, Text, Pressable, StyleSheet, Button } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
+import { Card } from "react-native-paper";
 type MacroCardProps = {
     macro: Macro | undefined;
     editMacro: (macro: Macro, procedure: DatabaseProcedure) => void;
 };
 
 export default function MacroCard({ macro, editMacro }: MacroCardProps) {
-    const inUseColor = ()=> {
+    const inUseColor = () => {
         if (macro?.inUse) {
-            return "green"
-        }else {
-            return "red"
+            return "green";
+        } else {
+            return "red";
         }
-        
-    }
+    };
     const newMacro = () => {
         let newMacro: Macro = {
             macroKey: "",
@@ -37,22 +37,26 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
     if (macro) {
         return (
             <Pressable>
-                <View style={styles.MacroCard}>
-                    <Text>{macro.nickname}</Text>
-                    <Text>Kcal: {macro.energyKcal}</Text>
-                    <Text>Dishes: {macro.dishes}</Text>
-                    <View style={styles.MacroButtons}>
-                    <Pressable onPress={() => editMacro(macro, "update")}>
-                        <Entypo name="edit" size={27} color="black"></Entypo>
-                    </Pressable>
-                    <Pressable onPress={() => editMacro(macro, "toggle")}>
-                        <Entypo name="bowl" size={27} color={inUseColor()}></Entypo>
-                    </Pressable>
-                    <Pressable onPress={() => editMacro(macro, "remove")}>
-                        <Entypo name="cross" size={27} color="black"></Entypo>
-                    </Pressable>
-                    </View>
-                </View>
+                <Card style={styles.MacroCard}>
+                    <Card.Title title={macro.nickname} />
+                    <Card.Content>
+                        <Text>Kcal: {macro.energyKcal}</Text>
+                        <Text>Dishes: {macro.dishes}</Text>
+                    </Card.Content>
+                    <Card.Actions>
+                        <View style={styles.MacroButtons}>
+                            <Pressable onPress={() => editMacro(macro, "update")}>
+                                <Entypo name="edit" size={27} color="black"></Entypo>
+                            </Pressable>
+                            <Pressable onPress={() => editMacro(macro, "toggle")}>
+                                <Entypo name="bowl" size={27} color={inUseColor()}></Entypo>
+                            </Pressable>
+                            <Pressable onPress={() => editMacro(macro, "remove")}>
+                                <Entypo name="cross" size={27} color="black"></Entypo>
+                            </Pressable>
+                        </View>
+                    </Card.Actions>
+                </Card>
             </Pressable>
         );
     } else {
@@ -73,13 +77,13 @@ const styles = StyleSheet.create({
     MacroCard: {
         width: 130,
         height: 130,
-        backgroundColor: "grey",
+        backgroundColor: "white",
         alignItems: "center",
         justifyContent: "center",
     },
     MacroButtons: {
-        display:"flex",
+        display: "flex",
         flexDirection: "row",
-        gap:10
+        gap: 10,
     },
 });

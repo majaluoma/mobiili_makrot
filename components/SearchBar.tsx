@@ -1,9 +1,7 @@
 import { useState } from "react";
 import {
     View,
-    Text,
     StyleSheet,
-    TextInput,
     NativeSyntheticEvent,
     TextInputChangeEventData,
     Pressable,
@@ -16,6 +14,7 @@ import FineliPalvelu from "../services/FineliPalvelu";
 import { Ingredient } from "../types/Interfaces";
 import log from "../services/log";
 import IngredientResult from "./listItems/IngredientResult";
+import { TextInput } from "react-native-paper";
 
 const stringSchema = z.string();
 
@@ -87,11 +86,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         marginTop: 30,
         width: 250,
-        borderWidth: 2,
-        borderBlockColor: "black",
-        borderStyle: "solid",
-        borderColor: "black",
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },

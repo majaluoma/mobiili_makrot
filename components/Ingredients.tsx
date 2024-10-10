@@ -1,11 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     View,
     Text,
     StyleSheet,
-    Button,
-    TextInput,
     NativeSyntheticEvent,
     TextInputChangeEventData,
     Pressable,
@@ -18,10 +16,11 @@ import { Ingredient, Macro } from "../types/Interfaces";
 import log from "../services/log";
 import SearchBar from "./SearchBar";
 import Entypo from "@expo/vector-icons/Entypo";
-import { useKeepAwake, activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import { useKeepAwake, activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { TestIngredientAPIdata } from "../types/TestData";
 import MacroPortionList from "./MacroPortionList";
 import Macroservice from "../services/Macroservice";
+import { Button, TextInput } from "react-native-paper";
 
 const numberSchema = z.number();
 
@@ -35,12 +34,12 @@ export default function Ingredients() {
         amount: 0,
     };
     const [ingredients, setIngredients] = useState([baseIngredient]);
-    const [keepAwakeColor, setKeepAwakeColor] = useState<"black" | "green">("black")
+    const [keepAwakeColor, setKeepAwakeColor] = useState<"black" | "green">("black");
     const [keyword, setKeyword] = useState("");
     const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
     const [searchBarToggled, setSearchBarToggled] = useState(false);
     const [ingredientRow, setIngredientRow] = useState(0);
-    const [macrosInUse, setMacrosInUse] = useState<Macro []> ([])
+    const [macrosInUse, setMacrosInUse] = useState<Macro[]>([]);
     const changeAmount = (input: NativeSyntheticEvent<TextInputChangeEventData>, i: number) => {
         const data = input.nativeEvent.text;
         try {
@@ -55,7 +54,7 @@ export default function Ingredients() {
             console.log("not verified");
         }
     };
-    
+
     useEffect(() => {
         fetchMacros();
     }, []);
@@ -65,7 +64,7 @@ export default function Ingredients() {
         let macroService = new Macroservice();
         setMacrosInUse(await macroService.fetchMacrosInUse());
     };
-    
+
     const fetchIngredients = async (keyword: string) => {
         const fineliPalvelu = new FineliPalvelu();
         const ingredients = await fineliPalvelu.keywordFetch(keyword);
@@ -111,7 +110,7 @@ export default function Ingredients() {
         for (let i = 0; i < ingredients.length; i++) {
             const ingredient = ingredients[i];
             if (ingredient.ingredient !== null) {
-                total += ingredient.ingredient?.energyKcal * ingredient.amount/100
+                total += (ingredient.ingredient?.energyKcal * ingredient.amount) / 100;
             }
         }
         return total;
@@ -157,9 +156,13 @@ export default function Ingredients() {
                                     setIngredientRow(i);
                                 }}
                             >
-                                <View style={styles.input}>
-                                    <Text>{ingredient.ingredient !==null? ingredient.ingredient.name.en :""}</Text>
-                                </View>
+                                <TextInput style={[styles.input, styles.ingredientInput]}>
+                                    <Text>
+                                        {ingredient.ingredient !== null
+                                            ? ingredient.ingredient.name.en
+                                            : ""}
+                                    </Text>
+                                </TextInput>
                             </Pressable>
                             <TextInput
                                 id={"amount_" + i.toString()}
@@ -183,15 +186,15 @@ export default function Ingredients() {
     };
 
     const keepOpen = () => {
-        console.debug("keepOpen")
-        if(keepAwakeColor === "black") {
-            setKeepAwakeColor("green")
+        console.debug("keepOpen");
+        if (keepAwakeColor === "black") {
+            setKeepAwakeColor("green");
             activateKeepAwakeAsync();
-        }else {
+        } else {
             deactivateKeepAwake();
-            setKeepAwakeColor("black")
+            setKeepAwakeColor("black");
         }
-    }
+    };
 
     const Item = ({ ingredient }: { ingredient: Ingredient }) => (
         <View>
@@ -207,8 +210,8 @@ export default function Ingredients() {
             </Pressable>
             <View style={styles.baseContainer}>
                 {ingredientFields()}
+                <Button onPress={addIngredient}>Add ingredient</Button>
                 <View style={styles.bottomInfo}>
-                    <Button onPress={addIngredient} title="Add ingredient"></Button>
                     <Text>Total kg: {calculateWeight()}</Text>
                     <Text>Total kcal: {calculateKcal()}</Text>
                     <Text>Total portions:</Text>
@@ -232,15 +235,17 @@ const styles = StyleSheet.create({
     },
     bottomInfo: {
         alignItems: "center",
+        position: "absolute",
+        bottom: 2,
     },
     eyeIcon: {
         position: "absolute",
-        bottom: 100,
-        left: 20,
+        top: -10,
+        right: 10,
+        zIndex: 200000,
     },
     ingredientsList: {
         marginTop: 20,
-        height: 500,
         display: "flex",
         justifyContent: "flex-start",
         flexDirection: "column",
@@ -251,16 +256,17 @@ const styles = StyleSheet.create({
         position: "relative",
         pointerEvents: "auto",
         zIndex: -1,
+        minHeight: 500,
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-start",
     },
     mainContainer: {
         position: "relative",
-        paddingBottom: 70,
         backgroundColor: "#fff",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
+        minHeight: 800,
     },
     row: {
         flexDirection: "row",
@@ -275,12 +281,10 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         paddingLeft: 10,
         width: 100,
-        borderWidth: 2,
-        borderBlockColor: "black",
-        borderStyle: "solid",
-        borderColor: "black",
-        backgroundColor: "#fff",
         alignItems: "flex-start",
         justifyContent: "center",
+    },
+    ingredientInput: {
+        pointerEvents: "none",
     },
 });
