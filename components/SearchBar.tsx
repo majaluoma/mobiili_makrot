@@ -7,6 +7,7 @@ import {
     Pressable,
     FlatList,
     Dimensions,
+    ScrollView,
 } from "react-native";
 import { z } from "zod";
 
@@ -14,12 +15,12 @@ import FineliPalvelu from "../services/FineliPalvelu";
 import { Ingredient } from "../types/Interfaces";
 import log from "../services/log";
 import IngredientResult from "./listItems/IngredientResult";
-import { TextInput } from "react-native-paper";
+import { Dialog, Portal, TextInput } from "react-native-paper";
 
 const stringSchema = z.string();
 
-export default function SearchBar({closeView, callback} : {closeView : ()=> void, callback : (ingredient : Ingredient)=> void})  {
-
+export default function SearchBar({ callback }: { callback: (ingredient: Ingredient) => void }) {
+    const [visible, setVisible] = useState(true);
     const [keyword, setKeyword] = useState("");
     const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
 
@@ -37,48 +38,46 @@ export default function SearchBar({closeView, callback} : {closeView : ()=> void
         fetchIngredients(data);
     };
 
+    const closeDialog = () => {
+        setVisible(false);
+    };
+
+    const save = (ingredient: Ingredient) => {
+        callback(ingredient);
+        setVisible(false);
+    };
+
     return (
-        <View>
-            <Pressable onPress={closeView}><View style={styles.overlayBackground}></View></Pressable>
-            <View style={styles.overlayView}>
-                <TextInput
-                    value={keyword}
-                    style={styles.searchBar}
-                    onChange={(e) => changeKeyword(e)}
-                    keyboardType="default"
-                ></TextInput>
-                <FlatList
-                    data={APIingredients}
-                    renderItem={({ item }) => (
-                        <IngredientResult ingredient={item} callback={callback}></IngredientResult>
-                    )}
-                ></FlatList>
-            </View>
-        </View>
+        <Portal>
+            <Dialog visible={visible} onDismiss={closeDialog} style={styles.dialogWindow}>
+                <Dialog.Title>Search</Dialog.Title>
+                    <TextInput
+                        value={keyword}
+                        style={styles.searchBar}
+                        onChange={(e) => changeKeyword(e)}
+                        keyboardType="default"
+                    ></TextInput>
+                <Dialog.Content>
+                        <FlatList
+                            data={APIingredients}
+                            renderItem={({ item }) => (
+                                <IngredientResult
+                                    ingredient={item}
+                                    callback={save}
+                                ></IngredientResult>
+                            )}
+                        ></FlatList>
+                    </Dialog.Content>
+            </Dialog>
+        </Portal>
     );
 }
 
-const { width, height } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
-    overlayView: {
-        backgroundColor: "white",
-        position: "absolute",
-        top: 40,
-        bottom: 150,
-        right: 40,
-        left: 40,
-        opacity: 1,
-        alignItems: "center",
-    },
-
-    // MIKS EI VOI LAITTAA STRINGEJÄÅ WIDTHIIS ESIM 1EM tai 100VW
-    overlayBackground: {
-        width: width,
-        height: height,
-        position: "static",
-        backgroundColor: "black",
-        opacity: 0.5,
+   
+    dialogWindow: {
+        marginTop: 100,
+        marginBottom: 200,
     },
     searchBar: {
         marginRight: 10,

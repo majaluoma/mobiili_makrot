@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { View, Text, StyleSheet, Pressable, Dimensions, ScrollView, Image } from "react-native";
+import { View, StyleSheet, Dimensions, Image, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Macro } from "../types/Interfaces";
 import { z } from "zod";
-import { Button, TextInput } from "react-native-paper";
+import { Button, Dialog, Portal, TextInput } from "react-native-paper";
+import DialogContent from "react-native-paper/lib/typescript/components/Dialog/DialogContent";
 
 type MacroEditViewProps = {
     macro: Macro;
-    closeView: (makro: Macro | undefined) => void;
     saveEditedMacro: (macro: Macro) => void;
 };
 
-export default function MacroEditView({ macro, closeView, saveEditedMacro }: MacroEditViewProps) {
+export default function MacroEditView({ macro, saveEditedMacro }: MacroEditViewProps) {
     const [editedMacro, setEditedMacro] = useState(macro);
+    const [visible, setVisible] = useState(true);
     const numberSchema = z.number();
     // No permissions request is necessary for launching the image library
     const pickImage = async () => {
@@ -85,46 +86,42 @@ export default function MacroEditView({ macro, closeView, saveEditedMacro }: Mac
         });
     };
 
+    const closeDialog = () => {
+        setVisible(false);
+    };
+
+    const save = () => {
+        saveEditedMacro(editedMacro);
+        setVisible(false);
+    };
+
     return (
-        <ScrollView>
-            <Pressable onPress={() => closeView(undefined)}>
-                <View style={styles.overlayBackground}></View>
-            </Pressable>
-            <ScrollView style={styles.overlayView}>
-                <Text>Edit macro</Text>
-                {macroEditInputs()}
-                <Button style={styles.saveButton} onPress={() => saveEditedMacro(editedMacro)}>
-                    Save this macro
-                </Button>
-            </ScrollView>
-        </ScrollView>
+        <Portal>
+            <Dialog visible={visible} onDismiss={closeDialog} style={styles.dialogWindow}>
+                <Dialog.ScrollArea>
+                    <Dialog.Title>Edit macro</Dialog.Title>
+                    <ScrollView>
+                    {macroEditInputs()}
+                    </ScrollView>
+                    <Dialog.Actions>
+                        <Button style={styles.saveButton} onPress={save}>
+                            Save this macro
+                        </Button>
+                    </Dialog.Actions>
+                </Dialog.ScrollArea>
+            </Dialog>
+        </Portal>
     );
 }
 
-const { width, height } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
-    overlayView: {
-        backgroundColor: "white",
-        position: "absolute",
-        marginTop: 40,
-        marginBottom: 40,
-        right: 40,
-        left: 40,
-        opacity: 1,
+    dialogWindow: {
+        marginTop: 100,
+        marginBottom: 200
     },
     saveButton: {
         marginBottom: 50,
     },
-    // MIKS EI VOI LAITTAA STRINGEJÄÅ WIDTHIIS ESIM 1EM tai 100VW
-    overlayBackground: {
-        width: width,
-        minHeight: height,
-        position: "static",
-        backgroundColor: "black",
-        opacity: 0.5,
-    },
-
     row: {
         flexDirection: "row",
         backgroundColor: "#fff",

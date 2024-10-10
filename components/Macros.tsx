@@ -8,7 +8,6 @@ import { DatabaseProcedure, Macro } from "../types/Interfaces";
 
 export default function Macros() {
     const [macros, setMacros] = useState([] as Macro[]);
-    const [editViewEnabled, setEditViewEnabled] = useState(false);
     const [editingMakro, setEditingMakro]: [
         undefined | Macro,
         Dispatch<SetStateAction<undefined | Macro>>
@@ -25,11 +24,6 @@ export default function Macros() {
     };
     const openEditView = (macro: Macro | undefined) => {
         setEditingMakro(macro);
-        setEditViewEnabled(true);
-    };
-    const closeEditView = () => {
-        setEditViewEnabled(false);
-        setEditingMakro(undefined);
     };
 
     const editMacro = (macro: Macro, procedure: DatabaseProcedure) => {
@@ -70,24 +64,18 @@ export default function Macros() {
         } else {
             macroService.updateMacro(macro);
         }
-
-        closeEditView();
+        setEditingMakro(undefined)
         fetchMacros();
     };
 
     const editViewIfEnabled = () => {
-        if (editViewEnabled && editingMakro) {
+        if (editingMakro) {
             return (
-                <View style={styles.overlayContainer}>
-                    <MacroEditView
-                        macro={editingMakro}
-                        closeView={closeEditView}
-                        saveEditedMacro={saveMacro}
-                    ></MacroEditView>
-                </View>
+                <MacroEditView
+                    macro={editingMakro}
+                    saveEditedMacro={saveMacro}
+                ></MacroEditView>
             );
-        } else {
-            return <View />;
         }
     };
 
@@ -145,7 +133,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     macrosList: {
-        maxWidth:275,
+        maxWidth: 275,
         marginTop: 10,
         display: "flex",
         flexDirection: "row",

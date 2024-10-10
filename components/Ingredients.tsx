@@ -15,12 +15,11 @@ import FineliPalvelu from "../services/FineliPalvelu";
 import { Ingredient, Macro } from "../types/Interfaces";
 import log from "../services/log";
 import SearchBar from "./SearchBar";
-import Entypo from "@expo/vector-icons/Entypo";
-import { useKeepAwake, activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { TestIngredientAPIdata } from "../types/TestData";
 import MacroPortionList from "./MacroPortionList";
 import Macroservice from "../services/Macroservice";
 import { Button, TextInput } from "react-native-paper";
+import KeepAwakeButton from "./KeepAwakeButton";
 
 const numberSchema = z.number();
 
@@ -28,14 +27,13 @@ type IngredientAmount = {
     ingredient: Ingredient | null;
     amount: number;
 };
+
 export default function Ingredients() {
     const baseIngredient: IngredientAmount = {
         ingredient: TestIngredientAPIdata[0],
         amount: 0,
     };
     const [ingredients, setIngredients] = useState([baseIngredient]);
-    const [keepAwakeColor, setKeepAwakeColor] = useState<"black" | "green">("black");
-    const [keyword, setKeyword] = useState("");
     const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
     const [searchBarToggled, setSearchBarToggled] = useState(false);
     const [ingredientRow, setIngredientRow] = useState(0);
@@ -117,6 +115,7 @@ export default function Ingredients() {
     };
 
     const toggleSearchBar = () => {
+        console.debug("openSearchBar");
         if (searchBarToggled) {
             setSearchBarToggled(false);
         } else {
@@ -124,23 +123,21 @@ export default function Ingredients() {
         }
     };
 
+    const searchDialog = () => {
+        if (searchBarToggled === true) {
+            console.debug("openSearchBar");
+            return <SearchBar callback={ingredientChosen}></SearchBar>;
+        }
+    };
+
     const ingredientChosen = (ingredient: Ingredient) => {
+        console.debug("ingredientChosen");
         const data = ingredient;
         let newIngredients = [...ingredients];
         newIngredients[ingredientRow].ingredient = data;
         setIngredients(newIngredients);
         toggleSearchBar();
         console.log(data + " " + ingredientRow);
-    };
-
-    const searchBarIfToggled = () => {
-        if (searchBarToggled) {
-            return (
-                <View style={styles.overlayContainer}>
-                    <SearchBar closeView={toggleSearchBar} callback={ingredientChosen}></SearchBar>
-                </View>
-            );
-        }
     };
 
     const ingredientFields = () => {
@@ -185,17 +182,6 @@ export default function Ingredients() {
         );
     };
 
-    const keepOpen = () => {
-        console.debug("keepOpen");
-        if (keepAwakeColor === "black") {
-            setKeepAwakeColor("green");
-            activateKeepAwakeAsync();
-        } else {
-            deactivateKeepAwake();
-            setKeepAwakeColor("black");
-        }
-    };
-
     const Item = ({ ingredient }: { ingredient: Ingredient }) => (
         <View>
             <Text>{ingredient.name.en}</Text>
@@ -204,17 +190,16 @@ export default function Ingredients() {
 
     return (
         <View style={styles.mainContainer}>
-            {searchBarIfToggled()}
-            <Pressable style={styles.eyeIcon} onPress={keepOpen}>
-                <Entypo name="eye" size={50} color={keepAwakeColor}></Entypo>
-            </Pressable>
+            <KeepAwakeButton></KeepAwakeButton>
+            {searchDialog()}
+            <SearchBar callback={ingredientChosen}></SearchBar>
             <View style={styles.baseContainer}>
                 {ingredientFields()}
                 <Button onPress={addIngredient}>Add ingredient</Button>
                 <View style={styles.bottomInfo}>
                     <Text>Total kg: {calculateWeight()}</Text>
                     <Text>Total kcal: {calculateKcal()}</Text>
-                    <Text>Total portions:</Text>
+                    <Text>Total portions per macroAvatar:</Text>
                     <MacroPortionList macros={macrosInUse}></MacroPortionList>
                     <StatusBar style="auto" />
                 </View>
@@ -224,25 +209,10 @@ export default function Ingredients() {
 }
 
 const styles = StyleSheet.create({
-    overlayContainer: {
-        position: "absolute",
-        pointerEvents: "auto",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
-    },
     bottomInfo: {
         alignItems: "center",
         position: "absolute",
         bottom: 2,
-    },
-    eyeIcon: {
-        position: "absolute",
-        top: -10,
-        right: 10,
-        zIndex: 200000,
     },
     ingredientsList: {
         marginTop: 20,

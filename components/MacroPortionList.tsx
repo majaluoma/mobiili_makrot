@@ -9,8 +9,8 @@ export default function MacroPortionList({ macros }: MacroPortionListProps) {
         <View style={styles.macroList}>
             {macros.map((macro) => {
                 return (
-                    <View key={macro.macroKey + "_pl"}>
-                        <Text>{macro.nickname}</Text>
+                    <View style={styles.macroItem} key={macro.macroKey + "_pl"}>
+                        <Text style={styles.macroPortions}>{macro.dishes}</Text>
                         {macro.profileImage !== "" ? (
                             <Image source={{ uri: macro.profileImage }} style={styles.image} />
                         ) : (
@@ -30,11 +30,33 @@ export default function MacroPortionList({ macros }: MacroPortionListProps) {
 
 const styles = StyleSheet.create({
     image: {
-        width: 50,
-        height: 50,
+        position:"absolute",
+        width: 65,
+        height: 65,
+    },
+    macroPortions: {
+        textAlign:"center",
+        textAlignVertical:"center",
+        zIndex:3,
+        width:40,
+        height:40,
+        backgroundColor:"white",
+        borderRadius:50,
+        position:"absolute"
     },
     macroList: {
         display: "flex",
         flexDirection: "row",
+        flexWrap:"wrap",
+        flex: 1,
+        justifyContent:"space-evenly", 
+        marginTop:33   
+    },
+    macroItem: {
+        alignItems:"center",
+        justifyContent:"center",
+        position:"relative",
+        width:65,
+        margin:2
     },
 });
