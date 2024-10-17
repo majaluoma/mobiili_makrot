@@ -14,7 +14,6 @@ class Macroservice {
     /** lisää tai muuttaa tietokannassa olevia tietoja nimimerkin pohjalta.
      *
      */
-
     async addMacro(macro: Macro): Promise<string> {
         const macroRef = ref(this.database, `/macros`);
         console.log("addMacro")
@@ -95,7 +94,7 @@ class Macroservice {
     async fetchMacrosInUse(): Promise<Macro[]> {
         const macros = await  this.fetchMacros();
         const filtered = macros.filter((macro) => {
-            if (macro.inUse) {
+            if (macro.inUse && macro.dishes>0 && macro.dishKcal>0) {
                 return macro
             }
         })

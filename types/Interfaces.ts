@@ -15,6 +15,7 @@ export interface Macro extends MacroInterface {
     dishes : number;
     inUse : boolean;
     profileImage: string;
+    dishKcal : number;
 }
 
 // Seuraava rajapinta mukailee Finavian tietoja

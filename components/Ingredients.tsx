@@ -38,6 +38,7 @@ export default function Ingredients() {
     const [searchBarToggled, setSearchBarToggled] = useState(false);
     const [ingredientRow, setIngredientRow] = useState(0);
     const [macrosInUse, setMacrosInUse] = useState<Macro[]>([]);
+    const [kcal, setKcal] = useState(0)
     const changeAmount = (input: NativeSyntheticEvent<TextInputChangeEventData>, i: number) => {
         const data = input.nativeEvent.text;
         try {
@@ -56,6 +57,11 @@ export default function Ingredients() {
     useEffect(() => {
         fetchMacros();
     }, []);
+
+    useEffect (()=> {
+        console.log("Calculate");
+        calculateKcal();
+    }, [ingredients])
 
     const fetchMacros = async () => {
         console.log("fetchMacros");
@@ -111,7 +117,7 @@ export default function Ingredients() {
                 total += (ingredient.ingredient?.energyKcal * ingredient.amount) / 100;
             }
         }
-        return total;
+        setKcal(total)
     };
 
     const toggleSearchBar = () => {
@@ -192,15 +198,14 @@ export default function Ingredients() {
         <View style={styles.mainContainer}>
             <KeepAwakeButton></KeepAwakeButton>
             {searchDialog()}
-            <SearchBar callback={ingredientChosen}></SearchBar>
             <View style={styles.baseContainer}>
                 {ingredientFields()}
                 <Button onPress={addIngredient}>Add ingredient</Button>
                 <View style={styles.bottomInfo}>
-                    <Text>Total kg: {calculateWeight()}</Text>
-                    <Text>Total kcal: {calculateKcal()}</Text>
+                    <Text>Total kg: {kcal}</Text>
+                    <Text>Total kcal: {kcal}</Text>
                     <Text>Total portions per macroAvatar:</Text>
-                    <MacroPortionList macros={macrosInUse}></MacroPortionList>
+                    <MacroPortionList macros={macrosInUse} kcal={kcal}></MacroPortionList>
                     <StatusBar style="auto" />
                 </View>
             </View>
