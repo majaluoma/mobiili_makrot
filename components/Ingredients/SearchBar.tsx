@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import { z } from "zod";
 
-import FineliPalvelu from "../services/FineliPalvelu";
-import { Ingredient } from "../types/Interfaces";
-import log from "../services/log";
-import IngredientResult from "./listItems/IngredientResult";
+import FineliPalvelu from "../../services/FineliPalvelu";
+import { Ingredient } from "../../types/Interfaces";
+import log from "../../services/log";
+import IngredientResult from "../listItems/IngredientResult";
 import { Dialog, Portal, TextInput } from "react-native-paper";
 
 const stringSchema = z.string();

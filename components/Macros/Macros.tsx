@@ -1,27 +1,17 @@
-import { StatusBar } from "expo-status-bar";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import MacroCard from "./MacroCard";
 import MacroEditView from "./MacroEditView";
-import Macroservice from "../services/Macroservice";
-import { DatabaseProcedure, Macro } from "../types/Interfaces";
+import { DatabaseProcedure, Macro } from "../../types/Interfaces";
+import { useMacros } from "../MacroContextProvider";
 
 export default function Macros() {
-    const [macros, setMacros] = useState([] as Macro[]);
+    const { macros, addMacro, updateMacro } = useMacros();
     const [editingMakro, setEditingMakro]: [
         undefined | Macro,
         Dispatch<SetStateAction<undefined | Macro>>
     ] = useState();
 
-    useEffect(() => {
-        fetchMacros();
-    }, []);
-
-    const fetchMacros = async () => {
-        console.log("fetchMacros");
-        let macroService = new Macroservice();
-        setMacros(await macroService.fetchMacros());
-    };
     const openEditView = (macro: Macro | undefined) => {
         setEditingMakro(macro);
     };
@@ -46,26 +36,21 @@ export default function Macros() {
 
     const deleteMacro = (macro: Macro) => {
         console.log("deleteMacro");
-        let macroService: Macroservice = new Macroservice();
-        macroService.removeMacro(macro);
-        fetchMacros();
+        deleteMacro(macro);
     };
 
     const saveMacro = (macro: Macro) => {
         console.log("saveMacro");
-        let macroService: Macroservice = new Macroservice();
-
         if (macro.macroKey === "" || macro.macroKey === undefined || macro.macroKey === null) {
             if (macro.nickname !== "") {
-                macroService.addMacro(macro);
+                addMacro(macro);
             } else {
                 return console.error("Information missing");
             }
         } else {
-            macroService.updateMacro(macro);
+            updateMacro(macro);
         }
         setEditingMakro(undefined)
-        fetchMacros();
     };
 
     const editViewIfEnabled = () => {
@@ -74,6 +59,7 @@ export default function Macros() {
                 <MacroEditView
                     macro={editingMakro}
                     saveEditedMacro={saveMacro}
+                    close={()=>setEditingMakro(undefined)}
                 ></MacroEditView>
             );
         }

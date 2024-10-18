@@ -1,15 +1,17 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet } from "react-native";
-import Macros from "./components/Macros";
-import Ingredients from "./components/Ingredients";
+import Macros from "./components/Macros/Macros";
+import Ingredients from "./components/Ingredients/Ingredients";
 import Entypo from "@expo/vector-icons/Entypo";
 import Settings from "./components/Settings";
 import { Appbar, PaperProvider } from "react-native-paper";
+import { MacroContextProvider } from "./components/MacroContextProvider";
 
 const Tab = createBottomTabNavigator();
 export default function App() {
     return (
+        <MacroContextProvider>
         <PaperProvider>
             <Appbar mode="small" elevated>
                 <Appbar.Content title="Macros" />
@@ -47,6 +49,7 @@ export default function App() {
                 </Tab.Navigator>
             </NavigationContainer>
         </PaperProvider>
+        </MacroContextProvider>
     );
 }
 const styles = StyleSheet.create({

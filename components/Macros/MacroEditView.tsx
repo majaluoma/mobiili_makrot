@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, StyleSheet, Dimensions, Image, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Macro } from "../types/Interfaces";
+import { Macro } from "../../types/Interfaces";
 import { z } from "zod";
 import { Button, Dialog, Portal, TextInput } from "react-native-paper";
 import DialogContent from "react-native-paper/lib/typescript/components/Dialog/DialogContent";
@@ -9,11 +9,11 @@ import DialogContent from "react-native-paper/lib/typescript/components/Dialog/D
 type MacroEditViewProps = {
     macro: Macro;
     saveEditedMacro: (macro: Macro) => void;
+    close: () => void
 };
 
-export default function MacroEditView({ macro, saveEditedMacro }: MacroEditViewProps) {
+export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEditViewProps) {
     const [editedMacro, setEditedMacro] = useState(macro);
-    const [visible, setVisible] = useState(true);
     const numberSchema = z.number();
     // No permissions request is necessary for launching the image library
     const pickImage = async () => {
@@ -87,17 +87,17 @@ export default function MacroEditView({ macro, saveEditedMacro }: MacroEditViewP
     };
 
     const closeDialog = () => {
-        setVisible(false);
+        close();
     };
 
     const save = () => {
         saveEditedMacro(editedMacro);
-        setVisible(false);
+        close();
     };
 
     return (
         <Portal>
-            <Dialog visible={visible} onDismiss={closeDialog} style={styles.dialogWindow}>
+            <Dialog visible={true} onDismiss={closeDialog} style={styles.dialogWindow}>
                 <Dialog.ScrollArea>
                     <Dialog.Title>Edit macro</Dialog.Title>
                     <ScrollView>
@@ -117,10 +117,9 @@ export default function MacroEditView({ macro, saveEditedMacro }: MacroEditViewP
 const styles = StyleSheet.create({
     dialogWindow: {
         marginTop: 100,
-        marginBottom: 200
+        marginBottom: 100
     },
     saveButton: {
-        marginBottom: 50,
     },
     row: {
         flexDirection: "row",

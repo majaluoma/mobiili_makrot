@@ -11,13 +11,12 @@ import {
 } from "react-native";
 import { z } from "zod";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FineliPalvelu from "../services/FineliPalvelu";
-import { Ingredient, Macro } from "../types/Interfaces";
-import log from "../services/log";
+import FineliPalvelu from "../../services/FineliPalvelu";
+import { Ingredient } from "../../types/Interfaces";
+import log from "../../services/log";
 import SearchBar from "./SearchBar";
-import { TestIngredientAPIdata } from "../types/TestData";
+import { TestIngredientAPIdata } from "../../types/TestData";
 import MacroPortionList from "./MacroPortionList";
-import Macroservice from "../services/Macroservice";
 import { Button, TextInput } from "react-native-paper";
 import KeepAwakeButton from "./KeepAwakeButton";
 
@@ -37,8 +36,11 @@ export default function Ingredients() {
     const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
     const [searchBarToggled, setSearchBarToggled] = useState(false);
     const [ingredientRow, setIngredientRow] = useState(0);
-    const [macrosInUse, setMacrosInUse] = useState<Macro[]>([]);
-    const [kcal, setKcal] = useState(0)
+    const [kcal, setKcal] = useState(0);
+    const [grams, setGrams] = useState(0)
+
+
+
     const changeAmount = (input: NativeSyntheticEvent<TextInputChangeEventData>, i: number) => {
         const data = input.nativeEvent.text;
         try {
@@ -54,20 +56,11 @@ export default function Ingredients() {
         }
     };
 
-    useEffect(() => {
-        fetchMacros();
-    }, []);
-
     useEffect (()=> {
         console.log("Calculate");
         calculateKcal();
+        calculateWeight();
     }, [ingredients])
-
-    const fetchMacros = async () => {
-        console.log("fetchMacros");
-        let macroService = new Macroservice();
-        setMacrosInUse(await macroService.fetchMacrosInUse());
-    };
 
     const fetchIngredients = async (keyword: string) => {
         const fineliPalvelu = new FineliPalvelu();
@@ -106,7 +99,7 @@ export default function Ingredients() {
             const ingredient = ingredients[i];
             total += ingredient.amount;
         }
-        return total;
+        setGrams(total)
     };
 
     const calculateKcal = () => {
@@ -202,10 +195,10 @@ export default function Ingredients() {
                 {ingredientFields()}
                 <Button onPress={addIngredient}>Add ingredient</Button>
                 <View style={styles.bottomInfo}>
-                    <Text>Total kg: {kcal}</Text>
+                    <Text>Total kg: {grams}</Text>
                     <Text>Total kcal: {kcal}</Text>
                     <Text>Total portions per macroAvatar:</Text>
-                    <MacroPortionList macros={macrosInUse} kcal={kcal}></MacroPortionList>
+                    <MacroPortionList grams= {grams} kcal={kcal}></MacroPortionList>
                     <StatusBar style="auto" />
                 </View>
             </View>

@@ -1,4 +1,4 @@
-import { DatabaseProcedure, Macro } from "../types/Interfaces";
+import { DatabaseProcedure, Macro } from "../../types/Interfaces";
 import { View, Text, Pressable, StyleSheet, Button } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Card } from "react-native-paper";
@@ -17,6 +17,7 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
     };
     const newMacro = () => {
         let newMacro: Macro = {
+            dishKcal:0,
             macroKey: "",
             nickname: "",
             dishes: 0,
