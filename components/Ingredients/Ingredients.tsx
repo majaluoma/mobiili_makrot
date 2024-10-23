@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { z } from "zod";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FineliPalvelu from "../../services/FineliPalvelu";
 import { Ingredient } from "../../types/Interfaces";
 import log from "../../services/log";
 import SearchBar from "./SearchBar";
@@ -19,6 +18,7 @@ import { TestIngredientAPIdata } from "../../types/TestData";
 import MacroPortionList from "./MacroPortionList";
 import { Button, TextInput } from "react-native-paper";
 import KeepAwakeButton from "./KeepAwakeButton";
+import { fetchMany } from "../../services/Fineli";
 
 const numberSchema = z.number();
 
@@ -63,8 +63,7 @@ export default function Ingredients() {
     }, [ingredients])
 
     const fetchIngredients = async (keyword: string) => {
-        const fineliPalvelu = new FineliPalvelu();
-        const ingredients = await fineliPalvelu.keywordFetch(keyword);
+        const ingredients = await fetchMany(keyword);
         log.debug(ingredients.length);
         setAPIingredients(ingredients);
     };

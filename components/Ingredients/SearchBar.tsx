@@ -1,21 +1,16 @@
 import { useState } from "react";
 import {
-    View,
     StyleSheet,
     NativeSyntheticEvent,
     TextInputChangeEventData,
-    Pressable,
     FlatList,
-    Dimensions,
-    ScrollView,
 } from "react-native";
 import { z } from "zod";
-
-import FineliPalvelu from "../../services/FineliPalvelu";
 import { Ingredient } from "../../types/Interfaces";
 import log from "../../services/log";
-import IngredientResult from "../listItems/IngredientResult";
+import IngredientResult from "./IngredientResult";
 import { Dialog, Portal, TextInput } from "react-native-paper";
+import { fetchMany } from "../../services/Fineli";
 
 const stringSchema = z.string();
 
@@ -25,10 +20,9 @@ export default function SearchBar({ callback }: { callback: (ingredient: Ingredi
     const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
 
     const fetchIngredients = async (keyword: string) => {
-        const fineliPalvelu = new FineliPalvelu();
-        const ingredients = await fineliPalvelu.keywordFetch(keyword);
-        log.debug(ingredients.length);
+        const ingredients = await fetchMany(keyword);
         setAPIingredients(ingredients);
+        log.debug("ok");
     };
 
     const changeKeyword = (input: NativeSyntheticEvent<TextInputChangeEventData>) => {

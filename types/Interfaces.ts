@@ -27,7 +27,7 @@ export interface FinaviasExtraMacros extends MacroInterface {
 } 
 
 // Seuraava rajapinta mukailee Finavian tietoja
-export interface Ingredient extends FinaviaBasicDataStructure, FinaviasExtraMacros {
+export interface Ingredient extends FinaviasExtraMacros {
     id:number,
     type: Type
     name : Name

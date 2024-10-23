@@ -10,6 +10,7 @@ import { MacroContextProvider } from "./components/MacroContextProvider";
 
 const Tab = createBottomTabNavigator();
 export default function App() {
+
     return (
         <MacroContextProvider>
         <PaperProvider>
