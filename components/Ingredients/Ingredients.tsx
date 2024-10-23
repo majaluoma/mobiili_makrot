@@ -154,7 +154,7 @@ export default function Ingredients() {
                                 <TextInput style={[styles.input, styles.ingredientInput]}>
                                     <Text>
                                         {ingredient.ingredient !== null
-                                            ? ingredient.ingredient.name.en
+                                            ? ingredient.ingredient.name.fi
                                             : ""}
                                     </Text>
                                 </TextInput>
