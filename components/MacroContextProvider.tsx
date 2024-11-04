@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { Macro } from '../types/Interfaces';
-import Macroservice from '../services/Macroservice';
+import { addOne, removeOne, updateOne, fetchMacros } from '../services/Macroservice';
 
 // Define the context shape
 type MacroContextType = {
@@ -18,30 +18,31 @@ type MacroContextProviderProps = {
 // Macro context provider
 export const MacroContextProvider = ({ children } : MacroContextProviderProps) => {
     const [macros, setMacros] = useState<Macro[]>([]);
-    const macroService : Macroservice = new Macroservice();
 
     useEffect(()=> {
-        fetchMacros()
+        fetchAllMacros()
     }, []) 
 
-    const fetchMacros = async () => {
+    const fetchAllMacros = async () => {
         console.log("fetchMacros");
-        setMacros(await macroService.fetchMacros());
+        setMacros(await fetchMacros());
+        console.debug("MAcros set to service");
     };
 
     const addMacro = (newMacro: Macro) => {
-        setMacros((prevMacros) => [...prevMacros, newMacro]);
-        macroService.addMacro(newMacro);
+        setMacros([...macros, newMacro]);
+        addOne(newMacro);
     };
 
     const updateMacro = (updatedMacro: Macro) => {
-        setMacros((prevMacros) => prevMacros.map(m => m.macroKey === updatedMacro.macroKey ? updatedMacro : m));
-        macroService.updateMacro(updatedMacro);
+        setMacros(macros.map(m => m.macroKey === updatedMacro.macroKey ? updatedMacro : m));
+        updateOne(updatedMacro);
     };
 
-    const deleteMacro = (deletedMAcro : Macro) => {
-        setMacros((prevMacros) => prevMacros.filter(m=>m.macroKey != deletedMAcro.macroKey))
-        macroService.removeMacro(deletedMAcro);
+    const deleteMacro = (deletedMacro : Macro) => {
+        setMacros(macros.filter(m=>m.macroKey != deletedMacro.macroKey));
+        console.debug("Hei:"+macros.filter(m=>m.macroKey != deletedMacro.macroKey).length)
+        removeOne(deletedMacro);
     }
 
     return (

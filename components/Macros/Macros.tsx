@@ -6,7 +6,7 @@ import { DatabaseProcedure, Macro } from "../../types/Interfaces";
 import { useMacros } from "../MacroContextProvider";
 
 export default function Macros() {
-    const { macros, addMacro, updateMacro } = useMacros();
+    const { macros, addMacro, updateMacro, deleteMacro } = useMacros();
     const [editingMakro, setEditingMakro]: [
         undefined | Macro,
         Dispatch<SetStateAction<undefined | Macro>>
@@ -32,11 +32,6 @@ export default function Macros() {
                 saveMacro({ ...macro, inUse: !macro.inUse });
                 break;
         }
-    };
-
-    const deleteMacro = (macro: Macro) => {
-        console.log("deleteMacro");
-        deleteMacro(macro);
     };
 
     const saveMacro = (macro: Macro) => {

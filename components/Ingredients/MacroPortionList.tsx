@@ -1,5 +1,4 @@
 import { View, Image, StyleSheet, Text, Pressable } from "react-native";
-import { Macro } from "../../types/Interfaces";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "react-native-paper";
 import ShowAndEditInput from "./ShowAndEditInput";
@@ -48,7 +47,7 @@ export default function MacroPortionList({ kcal, grams }: MacroPortionListProps)
         const sharedMacros = shareMacroPortions(newMacroPortions, null)
         setMacrosInUse(sharedMacros)
         console.debug("Macros or Kcal changed");
-    }, [macros, kcal]);
+    }, [ kcal]);
     
     const shareMacroPortions = (macros : PortionsPerMacro [], fixed : PortionsPerMacro | null) : PortionsPerMacro [] => {
         const remainingKcal = kcal - (fixed? fixed.macro.dishKcal*fixed.portions:0);

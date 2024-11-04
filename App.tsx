@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 import Macros from "./components/Macros/Macros";
 import Ingredients from "./components/Ingredients/Ingredients";
 import Entypo from "@expo/vector-icons/Entypo";
-import Settings from "./components/Settings";
 import { Appbar, PaperProvider } from "react-native-paper";
 import { MacroContextProvider } from "./components/MacroContextProvider";
 
@@ -29,9 +28,7 @@ export default function App() {
 
                             if (route.name === "Ingredients") {
                                 iconName = "bowl";
-                            } else if (route.name === "Settings") {
-                                iconName = "cog";
-                            } else if (route.name === "Macros") {
+                            }  else if (route.name === "Macros") {
                                 iconName = "add-user";
                             }
                             
@@ -46,7 +43,6 @@ export default function App() {
                 >
                     <Tab.Screen name="Ingredients" component={Ingredients} />
                     <Tab.Screen name="Macros" component={Macros} />
-                    <Tab.Screen name="Settings" component={Settings} />
                 </Tab.Navigator>
             </NavigationContainer>
         </PaperProvider>
