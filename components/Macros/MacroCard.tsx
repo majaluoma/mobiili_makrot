@@ -17,10 +17,10 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
     };
     const newMacro = () => {
         let newMacro: Macro = {
-            dishKcal:0,
+            kcalPerDish:0,
             macroKey: "",
             nickname: "",
-            dishes: 0,
+            dishesPerDay: 0,
             inUse: true,
             profileImage: "https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236_640.png",
             sugar: 0,
@@ -41,8 +41,8 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
                 <Card style={styles.MacroCard}>
                     <Card.Title title={macro.nickname} />
                     <Card.Content>
-                        <Text>Kcal: {macro.energyKcal}</Text>
-                        <Text>Dishes: {macro.dishes}</Text>
+                        <Text>Kcal: {macro.kcalPerDish}</Text>
+                        <Text>Dishes: {macro.dishesPerDay}</Text>
                     </Card.Content>
                     <Card.Actions>
                         <View style={styles.MacroButtons}>

@@ -45,7 +45,7 @@ export default function SearchBar({ callback }: { callback: (ingredient: Ingredi
     return (
         <Portal>
             <Dialog visible={visible} onDismiss={closeDialog} style={styles.dialogWindow}>
-                <Dialog.Title>Search</Dialog.Title>
+                <Dialog.Title>Search ingredient</Dialog.Title>
                 <View style={styles.contentView}>
                     <TextInput
                         value={keyword}
@@ -85,11 +85,12 @@ const styles = StyleSheet.create({
     searchBar: {
         marginRight: 10,
         marginLeft: 10,
-        paddingHorizontal: 10, // Adds padding on left and right inside the TextInput
-        paddingVertical: 10, // Adds padding on top and bottom
+        paddingHorizontal: 10, 
+        paddingVertical: 10, 
         marginTop: 30,
         width: 250,
-        backgroundColor: "#f0f0f0", // Optional for visual feedback
-        borderRadius: 5, // Optional for rounded corners
+        backgroundColor: "#f0f0f0", 
+        textAlign: "center",
+        borderRadius: 5, 
     },
 });

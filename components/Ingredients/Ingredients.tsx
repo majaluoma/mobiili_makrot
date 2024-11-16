@@ -38,6 +38,7 @@ export default function Ingredients() {
     const [ingredientRow, setIngredientRow] = useState(0);
     const [kcal, setKcal] = useState(0);
     const [grams, setGrams] = useState(0)
+    const [surplus, setSurplus] = useState(0)
 
 
 
@@ -98,7 +99,7 @@ export default function Ingredients() {
             const ingredient = ingredients[i];
             total += ingredient.amount;
         }
-        setGrams(total)
+        setGrams(Math.floor(total))
     };
 
     const calculateKcal = () => {
@@ -109,7 +110,7 @@ export default function Ingredients() {
                 total += (ingredient.ingredient?.energyKcal * ingredient.amount) / 100;
             }
         }
-        setKcal(total)
+        setKcal(Math.floor(total))
     };
 
     const toggleSearchBar = () => {
@@ -186,6 +187,10 @@ export default function Ingredients() {
         </View>
     );
 
+    const updateSurplus = (surplus : number) => {
+        setSurplus(surplus);
+    }
+
     return (
         <View style={styles.mainContainer}>
             <KeepAwakeButton></KeepAwakeButton>
@@ -196,8 +201,8 @@ export default function Ingredients() {
                 <View style={styles.bottomInfo}>
                     <Text>Total kg: {grams}</Text>
                     <Text>Total kcal: {kcal}</Text>
-                    <Text>Total portions per macroAvatar:</Text>
-                    <MacroPortionList grams= {grams} kcal={kcal}></MacroPortionList>
+                    <Text>Surplus: {surplus}</Text>
+                    <MacroPortionList grams= {grams} kcal={kcal} updateSurplus={updateSurplus}></MacroPortionList>
                     <StatusBar style="auto" />
                 </View>
             </View>

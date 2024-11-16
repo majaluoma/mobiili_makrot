@@ -63,7 +63,7 @@ export default function Macros() {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.baseContainer}>
-                <Text>Here are all macros in your group</Text>
+                <Text>Here are all macros in your group. You can add, edit and remove macros. Press the bowl icon to switch Macro from being used or not. MAcros with red bowl icon are not taken into account when calculating portions</Text>
                 <View style={styles.macrosList}>
                     {macros.map((macro) => {
                         return (
@@ -93,7 +93,9 @@ const styles = StyleSheet.create({
         zIndex: 0,
     },
     baseContainer: {
-        padding: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 20,
         position: "relative",
         pointerEvents: "auto",
         zIndex: -1,

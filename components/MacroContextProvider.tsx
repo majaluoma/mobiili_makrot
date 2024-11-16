@@ -18,6 +18,7 @@ type MacroContextProviderProps = {
 // Macro context provider
 export const MacroContextProvider = ({ children } : MacroContextProviderProps) => {
     const [macros, setMacros] = useState<Macro[]>([]);
+    
 
     useEffect(()=> {
         fetchAllMacros()
@@ -29,9 +30,9 @@ export const MacroContextProvider = ({ children } : MacroContextProviderProps) =
         console.debug("MAcros set to service");
     };
 
-    const addMacro = (newMacro: Macro) => {
-        setMacros([...macros, newMacro]);
-        addOne(newMacro);
+    const addMacro = async (newMacro: Macro) => {
+        const createdMacro = await addOne(newMacro);
+        setMacros([...macros, createdMacro]);
     };
 
     const updateMacro = (updatedMacro: Macro) => {

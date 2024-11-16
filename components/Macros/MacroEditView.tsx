@@ -3,8 +3,7 @@ import { View, StyleSheet, Dimensions, Image, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Macro } from "../../types/Interfaces";
 import { z } from "zod";
-import { Button, Dialog, Portal, TextInput } from "react-native-paper";
-import DialogContent from "react-native-paper/lib/typescript/components/Dialog/DialogContent";
+import { Button, Dialog, Portal, Text, TextInput } from "react-native-paper";
 
 type MacroEditViewProps = {
     macro: Macro;
@@ -62,7 +61,7 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
                 case "profileImage":
                     return (
                         <View key={`edit_${key}_${index}`} style={[styles.row, styles.imageEdit]}>
-                            <Button onPress={pickImage}>Avatar</Button>
+                            <Button style={styles.avatarButton} onPress={pickImage}>Add avatar</Button>
                             {editedMacro.profileImage !== null && (
                                 <Image
                                     source={{ uri: editedMacro.profileImage }}
@@ -75,7 +74,7 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
                     return (
                         <View key={`edit_${key}_${index}`} style={styles.row}>
                             <TextInput
-                                label={key}
+                                label={transformToHeader(key)}
                                 style={styles.input}
                                 value={editedMacro[key].toString()}
                                 onChange={(event) => inputChangeAction(key, event.nativeEvent.text)}
@@ -86,20 +85,43 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
         });
     };
 
+    /** Actions done when user clicks exit or backgorund on Macro editing dialog view
+     * 
+     */
     const closeDialog = () => {
         close();
     };
 
+    /** Actions done when user clicks save button on Macro editing dialog view
+     * 
+     */
     const save = () => {
         saveEditedMacro(editedMacro);
         close();
     };
+
+    const transformToHeader = (text : string) => {
+        let header = text;
+        const alphabetHigherCase = [
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", 
+            "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", 
+            "Ä", "Ö"
+        ];
+        alphabetHigherCase.forEach((alphabet) => {
+            header = header.replace(alphabet, ` ${alphabet.toLowerCase()}`)
+        })
+
+        return header[0].toUpperCase() + header.slice(1)
+    }
 
     return (
         <Portal>
             <Dialog visible={true} onDismiss={closeDialog} style={styles.dialogWindow}>
                 <Dialog.ScrollArea>
                     <Dialog.Title>Edit macro</Dialog.Title>
+                    <Dialog.Content>
+                        <Text>Edit your Macro's information here. Press Save this Macro, when you are ready</Text>
+                    </Dialog.Content>
                     <ScrollView>
                     {macroEditInputs()}
                     </ScrollView>
@@ -115,6 +137,9 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
 }
 
 const styles = StyleSheet.create({
+    avatarButton: {
+        flexWrap:"wrap",
+    },
     dialogWindow: {
         marginTop: 100,
         marginBottom: 100
@@ -130,8 +155,8 @@ const styles = StyleSheet.create({
     input: {
         height: 30,
         marginTop: 5,
-        marginRight: 10,
-        marginLeft: 10,
+        marginRight: 5,
+        marginLeft: 5,
         paddingLeft: 10,
         width: 150,
     },
@@ -141,6 +166,6 @@ const styles = StyleSheet.create({
     },
     imageEdit: {
         marginTop: 10,
-        height: 100,
+        marginBottom:10,
     },
 });

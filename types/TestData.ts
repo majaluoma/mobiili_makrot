@@ -7,7 +7,7 @@ const makrot: Macro[] = [
     {
       macroKey: "1",
       nickname: "JohnDoe",
-      dishes: 3,
+      dishesPerDay: 3,
       inUse: true,
       profileImage: "",
       sugar: 30,
@@ -22,7 +22,7 @@ const makrot: Macro[] = [
     {
       macroKey: "2",
       nickname: "JaneDoe",
-      dishes: 2,
+      dishesPerDay: 2,
       inUse: true,
       profileImage: "",
       sugar: 20,

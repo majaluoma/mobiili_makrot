@@ -12,10 +12,10 @@ interface MacroInterface {
 export interface Macro extends MacroInterface {
     macroKey: string;
     nickname: string;
-    dishes : number;
+    dishesPerDay : number;
     inUse : boolean;
     profileImage: string;
-    dishKcal : number;
+    kcalPerDish : number;
 }
 
 // Seuraava rajapinta mukailee Finavian tietoja

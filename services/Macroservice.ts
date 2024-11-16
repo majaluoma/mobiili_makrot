@@ -10,12 +10,13 @@ const database = getDatabase(app);
 /** lisää tai muuttaa tietokannassa olevia tietoja nimimerkin pohjalta.
  *
  */
-export async function addOne(macro: Macro): Promise<string> {
+export async function addOne(macro: Macro): Promise<Macro> {
     const macroRef = ref(database, `/macros`);
-    console.log("addMacro")
-    return push(macroRef, macro).then((ref) => {
-        return ref.toString();
-    });
+    console.log("addMacro");
+    const newMacroReference = await push(macroRef, macro);
+    const res = await get(newMacroReference);
+    const data = res.val() as Macro;
+    return data;
 }
 
 export async function fetchOne(macro: Macro): Promise<Macro> {
@@ -91,7 +92,7 @@ function transformToMacros  (data : FbMacros) : Macro[] {
 export async function fetchMacrosInUse(): Promise<Macro[]> {
     const macros = await  fetchMacros();
     const filtered = macros.filter((macro) => {
-        if (macro.inUse && macro.dishes>0 && macro.dishKcal>0) {
+        if (macro.inUse && macro.dishesPerDay>0 && macro.kcalPerDish>0) {
             return macro
         }
     })
