@@ -20,6 +20,8 @@ import KeepAwakeButton from "./KeepAwakeButton";
 import { fetchMany } from "../../services/Fineli";
 import { styles } from "../../styles/mainStyles";
 import { mainTheme } from "../../styles/mainTheme";
+import { ImageBackground } from "react-native";
+const image = {uri: 'https://cdn.pixabay.com/photo/2016/03/23/04/44/fruits-and-vegetables-1274079_960_720.png'};
 
 const numberSchema = z.number();
 

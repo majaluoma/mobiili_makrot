@@ -12,6 +12,20 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
         padding: 0,
         gap: 10,
     },
+    backGroundImage: {
+        position: 'absolute',  // Use absolute positioning to take the element out of the normal layout flow
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: 0,  // Ensure it appears above other elements (if needed)
+        justifyContent: 'center',  // This might not be necessary if you're just positioning an image
+        width: "100%",
+        height: "100%",
+        opacity: 0.5
+
+        // Optional: you can add other styles like backgroundColor, or use ImageBackground if you need an image
+    },
     baseContainer: {
         justifyContent: "flex-start",
         display:"flex",
@@ -21,7 +35,7 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
         paddingBottom: 20,
         position: "relative",
         pointerEvents: "auto",
-        zIndex: -1,
+        zIndex: 1,
         alignItems: "center",
     },
     contentCard: {

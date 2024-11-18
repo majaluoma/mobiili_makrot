@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, ImageBackground } from "react-native";
 import MacroCard from "./MacroCard";
 import MacroEditView from "./MacroEditView";
 import { DatabaseProcedure, Macro } from "../../types/Interfaces";
@@ -81,6 +81,7 @@ export default function Macros() {
                 </View>
             <MacroCard editMacro={editMacro} macro={undefined}></MacroCard>
             {editViewIfEnabled()}
+            
         </ScrollView>
     );
 }
