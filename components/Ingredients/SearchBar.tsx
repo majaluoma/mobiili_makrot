@@ -10,12 +10,14 @@ import { z } from "zod";
 import { Ingredient } from "../../types/Interfaces";
 import log from "../../services/log";
 import IngredientResult from "./IngredientResult";
-import { Dialog, Portal, TextInput } from "react-native-paper";
+import { Card, Dialog, Portal, TextInput } from "react-native-paper";
 import { fetchMany } from "../../services/Fineli";
+import { styles } from "../../styles/mainStyles";
+import { mainTheme } from "../../styles/mainTheme";
 
 const stringSchema = z.string();
 
-export default function SearchBar({ callback }: { callback: (ingredient: Ingredient) => void }) {
+export default function SearchBar({ callback }: { callback: (ingredient?: Ingredient) => void }) {
     const [visible, setVisible] = useState(true);
     const [keyword, setKeyword] = useState("");
     const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
@@ -30,10 +32,13 @@ export default function SearchBar({ callback }: { callback: (ingredient: Ingredi
         const data = input.nativeEvent.text;
         stringSchema.parse(data);
         setKeyword(data);
-        fetchIngredients(data);
+        if (data.length>2) {
+            fetchIngredients(data);
+        }
     };
 
     const closeDialog = () => {
+        callback(undefined);
         setVisible(false);
     };
 
@@ -44,18 +49,18 @@ export default function SearchBar({ callback }: { callback: (ingredient: Ingredi
 
     return (
         <Portal>
-            <Dialog visible={visible} onDismiss={closeDialog} style={styles.dialogWindow}>
+            <Dialog visible={visible} onDismiss={closeDialog} style={[styles(mainTheme).dialogWindowAlwaysFull, styles(mainTheme).dialogWindowMainContainer]}>
                 <Dialog.Title>Search ingredient</Dialog.Title>
-                <View style={styles.contentView}>
+                <Card style={styles(mainTheme).contentCard}>
                     <TextInput
                         value={keyword}
-                        style={styles.searchBar}
+                        style={styles(mainTheme).searchBar}
                         onChange={(e) => changeKeyword(e)}
                         keyboardType="default"
                     ></TextInput>
-                </View>
-                <Dialog.Content>
-                    <View style={styles.contentView}>
+                </Card>
+                <Dialog.ScrollArea>
+                    <Card style={[styles(mainTheme).contentCard]}>
                         <FlatList
                             data={APIingredients}
                             renderItem={({ item }) => (
@@ -65,32 +70,9 @@ export default function SearchBar({ callback }: { callback: (ingredient: Ingredi
                                 ></IngredientResult>
                             )}
                         ></FlatList>
-                    </View>
-                </Dialog.Content>
+                    </Card>
+                </Dialog.ScrollArea>
             </Dialog>
         </Portal>
     );
 }
-
-const styles = StyleSheet.create({
-    contentView: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    dialogWindow: {
-        marginTop: 100,
-        marginBottom: 90,
-    },
-    searchBar: {
-        marginRight: 10,
-        marginLeft: 10,
-        paddingHorizontal: 10, 
-        paddingVertical: 10, 
-        marginTop: 30,
-        width: 250,
-        backgroundColor: "#f0f0f0", 
-        textAlign: "center",
-        borderRadius: 5, 
-    },
-});

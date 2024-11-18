@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Button, Card, Dialog, Portal, Text, TextInput } from "react-native-paper";
 import { styles } from "../../styles/mainStyles";
 import { mainTheme } from "../../styles/mainTheme";
+import DialogContent from "react-native-paper/lib/typescript/components/Dialog/DialogContent";
 
 type MacroEditViewProps = {
     macro: Macro;
@@ -32,9 +33,10 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
     };
 
     /** Changes the value of macros depending on the key used
-     * can handle only string and number typed vvariables for now
+     * can handle only string and number typed variables for now
      */
     const inputChangeAction = (key: keyof Macro, value: string) => {
+        console.debug("inputChangeAction");
         if (typeof editedMacro[key] === "string") {
             setEditedMacro({ ...editedMacro, [key]: value });
         } else if (typeof editedMacro[key] === "number") {
@@ -46,7 +48,7 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
         } else if (key === "profileImage") {
             setEditedMacro({ ...editedMacro, [key]: value });
         } else {
-            console.log("Error with macro type");
+            console.error("Error with macro type");
         }
     };
 
@@ -119,20 +121,22 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
     return (
         <Portal>
             <Dialog visible={true} onDismiss={closeDialog} style={styles(mainTheme).dialogWindowMainContainer}>
+                <Dialog.ScrollArea >
+                    <ScrollView>
                     <Dialog.Title>Edit macro</Dialog.Title>
+                    <Dialog.Content>
                         <Card style={styles(mainTheme).contentCard}>
                         <Text>Edit your Macro's information here. Press Save this Macro, when you are ready</Text>
                         </Card>
-                <Dialog.ScrollArea >
-                    <ScrollView>
+                    </Dialog.Content>
                     {macroEditInputs()}
-                    </ScrollView>
-                </Dialog.ScrollArea>
                     <Dialog.Actions>
                         <Button labelStyle={{ color: mainTheme.colors.onPrimary }} style={styles(mainTheme).smallTextButton} onPress={save}>
                             Save this macro
                         </Button>
                     </Dialog.Actions>
+                    </ScrollView>
+                </Dialog.ScrollArea>
             </Dialog>
         </Portal>
     );

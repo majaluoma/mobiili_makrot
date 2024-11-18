@@ -154,8 +154,10 @@ export default function MacroPortionList({ kcal, grams, updateSurplus }: MacroPo
                         )
                     );
                 })}
+
                 
             </View>
+            {macrosInUse.length == 0 && <Text style={styles(mainTheme).infoText}>There are no active macros. Add new macros or set them active in Macros -tab</Text>}
         </View>
     );
 }

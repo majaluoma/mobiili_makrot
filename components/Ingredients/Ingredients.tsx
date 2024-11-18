@@ -119,8 +119,12 @@ export default function Ingredients() {
         }
     };
 
-    const ingredientChosen = (ingredient: Ingredient) => {
+    const ingredientChosen = (ingredient?: Ingredient) => {
         console.debug("ingredientChosen");
+        if (!ingredient) {
+            toggleSearchBar();
+            return;
+        } 
         const data = ingredient;
         let newIngredients = [...ingredients];
         newIngredients[ingredientRow].ingredient = data;
@@ -132,7 +136,7 @@ export default function Ingredients() {
     const ingredientFields = () => {
         return (
             <Card style={styles(mainTheme).contentCard}>
-                <Text>Add ingredients and weight of each</Text>
+                <Text>Add ingredients and weight of each (kg)</Text>
                 {ingredients.map((ingredient, i) => {
                     return (
                         <View key={i} style={styles(mainTheme).row}>
@@ -142,7 +146,7 @@ export default function Ingredients() {
                                     setIngredientRow(i);
                                 }}
                             >
-                                <TextInput style={[styles(mainTheme).inputField]}>
+                                <TextInput style={[styles(mainTheme).inputFieldWithdialog]}>
                                     <Text>
                                         {ingredient.ingredient !== null
                                             ? ingredient.ingredient.name.fi
@@ -168,6 +172,10 @@ export default function Ingredients() {
                     );
                 })}
                 <Button onPress={addIngredient}>Add ingredient</Button>
+                <View>
+                <Text>Total kg: {grams}</Text>
+                <Text>Total kcal: {kcal}</Text>
+                </View>
             </Card>
         );
     };
@@ -189,12 +197,11 @@ export default function Ingredients() {
                 {ingredientFields()}
                 <Card style={styles(mainTheme).contentCard}>
                     <View style={styles(mainTheme).bottomInfo}>
+                        <Text style={styles(mainTheme).infoText}>Even distribution of portions below. You can click a Macro to change it's specific portions</Text>
                         <View>
-                        <Text>Total kg: {grams}</Text>
-                        <Text>Total kcal: {kcal}</Text>
-                        <Text>Surplus: {surplus}</Text>
                         </View>
                         <MacroPortionList grams= {grams} kcal={kcal} updateSurplus={updateSurplus}></MacroPortionList>
+                        <Text>Surplus after distributing: {surplus} kcal</Text>
                         <StatusBar style="auto" />
                     </View>
                 </Card>

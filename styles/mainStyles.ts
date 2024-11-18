@@ -39,6 +39,9 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
         alignItems: "center",
     },
     contentCard: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         margin: 10,
         elevation: 10,
         padding: 25,
@@ -87,6 +90,15 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
         backgroundColor: theme.colors.surface,
         color: theme.colors.onSurface
     },
+    inputFieldWithdialog: {
+        height: 30,
+        marginTop: 5,
+        paddingLeft: 10,
+        width: 150,
+        backgroundColor: theme.colors.surface,
+        color: theme.colors.onSurface,
+        pointerEvents: "none"
+    },
     inputFieldSmall: {
         height: 30,
         marginTop: 5,
@@ -99,8 +111,7 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
         backgroundColor: theme.colors.secondary,
         color: theme.colors.onSecondary,
         marginTop: 100,
-        marginBottom: 100,
-        padding: 10,
+        padding: 5,
         flex: 1,
         display: "flex",
         flexDirection: "column",
@@ -150,7 +161,6 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
     infoText: {
         fontSize: 10,
         flexWrap: "wrap",
-        width: 50,
         textAlign: "center",
     },
     macroPortionItem: {
@@ -180,18 +190,14 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
         textAlignVertical: "center",
     },
     searchBar: {
-        marginRight: 10,
-        marginLeft: 10,
-        paddingHorizontal: 10, 
-        paddingVertical: 10, 
-        marginTop: 30,
         width: 250,
-        backgroundColor: "#f0f0f0", 
+        backgroundColor: theme.colors.surface, 
         textAlign: "center",
-        borderRadius: 5, 
     },
+    dialogWindowAlwaysFull: {
+        minHeight: 500,
+    }
 }
 );
-
 
 
