@@ -2,7 +2,8 @@ import { Pressable, StyleSheet } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useState } from "react";
-import { Text } from "react-native-paper";
+import { MD3Theme, Text } from "react-native-paper";
+import { mainTheme } from "../../styles/mainTheme";
 
 export default function KeepAwakeButton() {
     const [keepAwakeColor, setKeepAwakeColor] = useState<"black" | "white">("black");
@@ -17,20 +18,21 @@ export default function KeepAwakeButton() {
         }
     };
     return (
-        <Pressable style={styles.eyeIcon} onPress={keepOpen}>
+        <Pressable style={styles(mainTheme).eyeIcon} onPress={keepOpen}>
             <Entypo name="eye" size={50} color={keepAwakeColor}></Entypo>
-            <Text style={styles.text}>Keep open</Text>
+            <Text style={styles(mainTheme).text}>Keep open</Text>
         </Pressable>
     );
 }
 
-const styles = StyleSheet.create({
+const styles = (theme : MD3Theme) => StyleSheet.create({
     eyeIcon: {
         position: "absolute",
         right: 10,
-        zIndex: 200000,
+        top: 45,
+        zIndex: 200,
         alignItems:"center",
-        backgroundColor:"green",
+        backgroundColor: theme.colors.primary,
         borderRadius: 400,
         width: 50,
         height: 50,

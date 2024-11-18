@@ -1,22 +1,24 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StyleSheet } from "react-native";
 import Macros from "./components/Macros/Macros";
 import Ingredients from "./components/Ingredients/Ingredients";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Appbar, PaperProvider } from "react-native-paper";
+import { Appbar, PaperProvider, Text, useTheme } from "react-native-paper";
 import { MacroContextProvider } from "./components/MacroContextProvider";
-
+import { mainTheme } from "./styles/mainTheme";
+import { styles } from "./styles/mainStyles";
+import KeepAwakeButton from "./components/Ingredients/KeepAwakeButton";
 const Tab = createBottomTabNavigator();
 export default function App() {
-
+    
     return (
         <MacroContextProvider>
-        <PaperProvider>
-            <Appbar mode="small" elevated>
+        <PaperProvider theme= {mainTheme}>
+            <Appbar mode="medium" elevated>
                 <Appbar.Content title="Macros" />
             </Appbar>
             <NavigationContainer>
+                <KeepAwakeButton/>
                 <Tab.Navigator
                     screenOptions={({ route }) => ({
                         // Navigator can be customized using screenOptions
@@ -35,12 +37,11 @@ export default function App() {
 
                             return <Entypo name={iconName} size={24} color="black" />; //it returns an icon component
                         },
-                        tabBarActiveTintColor: 'green', 
-                        headerTintColor:"green",
-                        headerStyle: styles.headerBar,
-                        headerTitleStyle:  styles.headerTitle
+
+                        headerStyle: styles(mainTheme).headerBar,
+                        headerTitleStyle:  styles(mainTheme).headerTitle
                     })}
-                >
+                    >
                     <Tab.Screen name="Ingredients" component={Ingredients} />
                     <Tab.Screen name="Macros" component={Macros} />
                 </Tab.Navigator>
@@ -49,17 +50,3 @@ export default function App() {
         </MacroContextProvider>
     );
 }
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    headerBar: {
-        height:60,
-    },
-    headerTitle: {
-        top:-30,
-    },
-});

@@ -1,9 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import MacroCard from "./MacroCard";
 import MacroEditView from "./MacroEditView";
 import { DatabaseProcedure, Macro } from "../../types/Interfaces";
 import { useMacros } from "../MacroContextProvider";
+import { styles } from "../../styles/mainStyles";
+import { mainTheme } from "../../styles/mainTheme";
+import { Card } from "react-native-paper";
 
 export default function Macros() {
     const { macros, addMacro, updateMacro, deleteMacro } = useMacros();
@@ -61,10 +64,11 @@ export default function Macros() {
     };
 
     return (
-        <View style={styles.mainContainer}>
-            <View style={styles.baseContainer}>
-                <Text>Here are all macros in your group. You can add, edit and remove macros. Press the bowl icon to switch Macro from being used or not. MAcros with red bowl icon are not taken into account when calculating portions</Text>
-                <View style={styles.macrosList}>
+        <ScrollView contentContainerStyle={styles(mainTheme).mainContainer}>
+                <Card style={styles(mainTheme).contentCard}>
+                <Text >Here are all macros in your group. You can add, edit and remove macros. Press the bowl icon to switch Macro from being used or not. MAcros with red bowl icon are not taken into account when calculating portions</Text>
+                </Card>
+                <View style={styles(mainTheme).macrosList}>
                     {macros.map((macro) => {
                         return (
                             <MacroCard
@@ -75,53 +79,8 @@ export default function Macros() {
                         );
                     })}
                 </View>
-            </View>
             <MacroCard editMacro={editMacro} macro={undefined}></MacroCard>
             {editViewIfEnabled()}
-        </View>
+        </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    overlayContainer: {
-        position: "absolute",
-        pointerEvents: "auto",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
-    },
-    baseContainer: {
-        paddingLeft: 20,
-        paddingRight: 20,
-        paddingBottom: 20,
-        position: "relative",
-        pointerEvents: "auto",
-        zIndex: -1,
-        alignItems: "center",
-    },
-    mainContainer: {
-        position: "relative",
-        paddingBottom: 70,
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    macrosList: {
-        maxWidth: 275,
-        marginTop: 10,
-        display: "flex",
-        flexDirection: "row",
-        gap: 15,
-        flexWrap: "wrap",
-        justifyContent: "flex-start",
-    },
-});

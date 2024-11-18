@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
     View,
     Text,
-    StyleSheet,
     NativeSyntheticEvent,
     TextInputChangeEventData,
     Pressable,
@@ -16,9 +15,11 @@ import log from "../../services/log";
 import SearchBar from "./SearchBar";
 import { TestIngredientAPIdata } from "../../types/TestData";
 import MacroPortionList from "./MacroPortionList";
-import { Button, TextInput } from "react-native-paper";
+import { Button, Card, TextInput } from "react-native-paper";
 import KeepAwakeButton from "./KeepAwakeButton";
 import { fetchMany } from "../../services/Fineli";
+import { styles } from "../../styles/mainStyles";
+import { mainTheme } from "../../styles/mainTheme";
 
 const numberSchema = z.number();
 
@@ -33,7 +34,7 @@ export default function Ingredients() {
         amount: 0,
     };
     const [ingredients, setIngredients] = useState([baseIngredient]);
-    const [APIingredients, setAPIingredients] = useState([] as Ingredient[]);
+    const [ApiIngredients, setApiIngredients] = useState([] as Ingredient[]);
     const [searchBarToggled, setSearchBarToggled] = useState(false);
     const [ingredientRow, setIngredientRow] = useState(0);
     const [kcal, setKcal] = useState(0);
@@ -62,19 +63,6 @@ export default function Ingredients() {
         calculateKcal();
         calculateWeight();
     }, [ingredients])
-
-    const fetchIngredients = async (keyword: string) => {
-        const ingredients = await fetchMany(keyword);
-        log.debug(ingredients.length);
-        setAPIingredients(ingredients);
-    };
-
-    const changeIngredient = (ingredient: IngredientAmount, i: number) => {
-        const data = ingredient.ingredient;
-        let newIngredients = [...ingredients];
-        newIngredients[i].ingredient = data;
-        setIngredients(newIngredients);
-    };
 
     const addIngredient = () => {
         let newIngredients = [...ingredients];
@@ -141,18 +129,18 @@ export default function Ingredients() {
 
     const ingredientFields = () => {
         return (
-            <View style={styles.ingredientsList}>
+            <Card style={styles(mainTheme).contentCard}>
                 <Text>Add ingredients and weight of each</Text>
                 {ingredients.map((ingredient, i) => {
                     return (
-                        <View key={i} style={styles.row}>
+                        <View key={i} style={styles(mainTheme).row}>
                             <Pressable
                                 onPress={() => {
                                     toggleSearchBar();
                                     setIngredientRow(i);
                                 }}
                             >
-                                <TextInput style={[styles.input, styles.ingredientInput]}>
+                                <TextInput style={[styles(mainTheme).inputField]}>
                                     <Text>
                                         {ingredient.ingredient !== null
                                             ? ingredient.ingredient.name.fi
@@ -163,7 +151,7 @@ export default function Ingredients() {
                             <TextInput
                                 id={"amount_" + i.toString()}
                                 value={ingredient.amount.toString()}
-                                style={styles.input}
+                                style={styles(mainTheme).inputFieldSmall}
                                 onChange={(e) => changeAmount(e, i)}
                                 keyboardType="numeric"
                             ></TextInput>
@@ -171,13 +159,14 @@ export default function Ingredients() {
                                 <FontAwesome name="remove" size={24} color={"black"} />
                             </Pressable>
                             <FlatList
-                                data={APIingredients}
+                                data={ApiIngredients}
                                 renderItem={({ item }) => <Item ingredient={item}></Item>}
                             ></FlatList>
                         </View>
                     );
                 })}
-            </View>
+                <Button onPress={addIngredient}>Add ingredient</Button>
+            </Card>
         );
     };
 
@@ -192,71 +181,22 @@ export default function Ingredients() {
     }
 
     return (
-        <View style={styles.mainContainer}>
-            <KeepAwakeButton></KeepAwakeButton>
+        <View style={styles(mainTheme).mainContainer}>
             {searchDialog()}
-            <View style={styles.baseContainer}>
+            <View style={styles(mainTheme).baseContainer}>
                 {ingredientFields()}
-                <Button onPress={addIngredient}>Add ingredient</Button>
-                <View style={styles.bottomInfo}>
-                    <Text>Total kg: {grams}</Text>
-                    <Text>Total kcal: {kcal}</Text>
-                    <Text>Surplus: {surplus}</Text>
-                    <MacroPortionList grams= {grams} kcal={kcal} updateSurplus={updateSurplus}></MacroPortionList>
-                    <StatusBar style="auto" />
-                </View>
+                <Card style={styles(mainTheme).contentCard}>
+                    <View style={styles(mainTheme).bottomInfo}>
+                        <View>
+                        <Text>Total kg: {grams}</Text>
+                        <Text>Total kcal: {kcal}</Text>
+                        <Text>Surplus: {surplus}</Text>
+                        </View>
+                        <MacroPortionList grams= {grams} kcal={kcal} updateSurplus={updateSurplus}></MacroPortionList>
+                        <StatusBar style="auto" />
+                    </View>
+                </Card>
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    bottomInfo: {
-        alignItems: "center",
-        position: "absolute",
-        bottom: 2,
-    },
-    ingredientsList: {
-        marginTop: 20,
-        display: "flex",
-        justifyContent: "flex-start",
-        flexDirection: "column",
-        gap: 10,
-    },
-    baseContainer: {
-        top: 10,
-        position: "relative",
-        pointerEvents: "auto",
-        zIndex: -1,
-        minHeight: 500,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-    },
-    mainContainer: {
-        position: "relative",
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        minHeight: 800,
-    },
-    row: {
-        flexDirection: "row",
-
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "space-around",
-    },
-    input: {
-        height: 30,
-        marginRight: 10,
-        marginLeft: 10,
-        paddingLeft: 10,
-        width: 100,
-        alignItems: "flex-start",
-        justifyContent: "center",
-    },
-    ingredientInput: {
-        pointerEvents: "none",
-    },
-});

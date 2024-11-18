@@ -1,9 +1,11 @@
 import { View, Image, StyleSheet, Text, Pressable } from "react-native";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
 import ShowAndEditInput from "./ShowAndEditInput";
 import { PortionsPerMacro } from "../../types/ReactTypes";
 import { useMacros } from "../MacroContextProvider";
+import { styles } from "../../styles/mainStyles";
+import { mainTheme } from "../../styles/mainTheme";
 
 type MacroPortionListProps = {
     kcal: number;
@@ -104,9 +106,12 @@ export default function MacroPortionList({ kcal, grams, updateSurplus }: MacroPo
     };
     
     return (
-        <View style= {styles.macroView}>
+        <View>
+            <View >
+                    <Button labelStyle={{color: mainTheme.colors.onSecondary}} style={styles(mainTheme).smallTextButton} onPress={() => setFixedPortionAmount(null)}>Reset portions</Button>
+            </View>
             <Text>Total portions per Macro:</Text>
-            <View style={styles.macroList}>
+            <View style={styles(mainTheme).macroPortionList}>
                 {fixedPortion && (
                     <ShowAndEditInput
                     visible={editingMacro}
@@ -115,33 +120,30 @@ export default function MacroPortionList({ kcal, grams, updateSurplus }: MacroPo
                     close={closeDialog}
                     ></ShowAndEditInput>
                 )}
-                <View style={styles.resetField}>
-                    <Button onPress={() => setFixedPortionAmount(null)}>Reset</Button>
-                    <Text style={styles.infoText}>Resets portions to even</Text>
-                </View>
+                
                 {macrosInUse.map((macro) => {
                     return (
                         macro && (
-                            <View style={styles.macroItem} key={macro.macro.macroKey + "_pl"}>
+                            <View style={styles(mainTheme).macroPortionItem} key={macro.macro.macroKey + "_pl"}>
                                 <Pressable
                                     onPress={() => editMacro(macro)}
-                                    style={styles.macroPortions}
+                                    style={styles(mainTheme).macroPortions}
                                     >
-                                    <Text style={styles.macroPortionText}>
+                                    <Text style={styles(mainTheme).macroPortionText}>
                                         {macro.portions.toString()}
                                     </Text>
                                 </Pressable>
                                 {macro.macro.profileImage !== "" ? (
                                     <Image
                                     source={{ uri: macro.macro.profileImage }}
-                                    style={styles.image}
+                                    style={styles(mainTheme).smallSquareImage}
                                     />
                                 ) : (
                                     <Image
                                     source={{
                                             uri: "https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236_640.png",
                                         }}
-                                        style={styles.image}
+                                        style={styles(mainTheme).smallSquareImage}
                                         />
                                     )}
                                 <Text>
@@ -152,62 +154,8 @@ export default function MacroPortionList({ kcal, grams, updateSurplus }: MacroPo
                         )
                     );
                 })}
+                
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    macroView: {
-        marginTop: 27,
-    },
-    image: {
-        width: 65,
-        height: 65,
-    },
-    macroPortionText: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        position: "absolute",
-        textAlign: "center",
-        textAlignVertical: "center",
-    },
-    macroPortions: {
-        top: 20,
-        alignContent: "center",
-        zIndex: 3,
-        width: 40,
-        height: 40,
-        backgroundColor: "white",
-        borderRadius: 50,
-        position: "absolute",
-    },
-    macroList: {
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        flex: 1,
-        justifyContent: "space-evenly",
-        marginTop: 5,
-    },
-    macroItem: {
-        alignItems: "center",
-        justifyContent: "center",
-        display: "flex",
-        width: 65,
-        margin: 2,
-    },
-    infoText: {
-        fontSize: 10,
-        flexWrap: "wrap",
-        width: 50,
-        textAlign: "center",
-    },
-    resetField: {
-        padding: 5,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-});

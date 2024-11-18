@@ -3,7 +3,9 @@ import { View, StyleSheet, Dimensions, Image, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Macro } from "../../types/Interfaces";
 import { z } from "zod";
-import { Button, Dialog, Portal, Text, TextInput } from "react-native-paper";
+import { Button, Card, Dialog, Portal, Text, TextInput } from "react-native-paper";
+import { styles } from "../../styles/mainStyles";
+import { mainTheme } from "../../styles/mainTheme";
 
 type MacroEditViewProps = {
     macro: Macro;
@@ -60,22 +62,22 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
                     return "";
                 case "profileImage":
                     return (
-                        <View key={`edit_${key}_${index}`} style={[styles.row, styles.imageEdit]}>
-                            <Button style={styles.avatarButton} onPress={pickImage}>Add avatar</Button>
+                        <View key={`edit_${key}_${index}`} style={styles(mainTheme).row}>
+                            <Button labelStyle={{ color: mainTheme.colors.onPrimary }} style={styles(mainTheme).smallTextButton} onPress={pickImage}>Add avatar</Button>
                             {editedMacro.profileImage !== null && (
                                 <Image
                                     source={{ uri: editedMacro.profileImage }}
-                                    style={styles.image}
+                                    style={styles(mainTheme).mediumSquareImage}
                                 />
                             )}
                         </View>
                     );
                 default:
                     return (
-                        <View key={`edit_${key}_${index}`} style={styles.row}>
+                        <View key={`edit_${key}_${index}`} style={styles(mainTheme).row}>
                             <TextInput
                                 label={transformToHeader(key)}
-                                style={styles.input}
+                                style={styles(mainTheme).inputField}
                                 value={editedMacro[key].toString()}
                                 onChange={(event) => inputChangeAction(key, event.nativeEvent.text)}
                             ></TextInput>
@@ -116,56 +118,23 @@ export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEd
 
     return (
         <Portal>
-            <Dialog visible={true} onDismiss={closeDialog} style={styles.dialogWindow}>
-                <Dialog.ScrollArea>
+            <Dialog visible={true} onDismiss={closeDialog} style={styles(mainTheme).dialogWindowMainContainer}>
                     <Dialog.Title>Edit macro</Dialog.Title>
-                    <Dialog.Content>
+                        <Card style={styles(mainTheme).contentCard}>
                         <Text>Edit your Macro's information here. Press Save this Macro, when you are ready</Text>
-                    </Dialog.Content>
+                        </Card>
+                <Dialog.ScrollArea >
                     <ScrollView>
                     {macroEditInputs()}
                     </ScrollView>
+                </Dialog.ScrollArea>
                     <Dialog.Actions>
-                        <Button style={styles.saveButton} onPress={save}>
+                        <Button labelStyle={{ color: mainTheme.colors.onPrimary }} style={styles(mainTheme).smallTextButton} onPress={save}>
                             Save this macro
                         </Button>
                     </Dialog.Actions>
-                </Dialog.ScrollArea>
             </Dialog>
         </Portal>
     );
 }
 
-const styles = StyleSheet.create({
-    avatarButton: {
-        flexWrap:"wrap",
-    },
-    dialogWindow: {
-        marginTop: 100,
-        marginBottom: 100
-    },
-    saveButton: {
-    },
-    row: {
-        flexDirection: "row",
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "space-around",
-    },
-    input: {
-        height: 30,
-        marginTop: 5,
-        marginRight: 5,
-        marginLeft: 5,
-        paddingLeft: 10,
-        width: 150,
-    },
-    image: {
-        width: 100,
-        height: 100,
-    },
-    imageEdit: {
-        marginTop: 10,
-        marginBottom:10,
-    },
-});

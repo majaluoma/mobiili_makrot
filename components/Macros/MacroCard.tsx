@@ -1,7 +1,9 @@
 import { DatabaseProcedure, Macro } from "../../types/Interfaces";
-import { View, Text, Pressable, StyleSheet, Button } from "react-native";
+import { View, Text, Pressable} from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Card } from "react-native-paper";
+import { styles } from "../../styles/mainStyles";
+import { mainTheme } from "../../styles/mainTheme";
 type MacroCardProps = {
     macro: Macro | undefined;
     editMacro: (macro: Macro, procedure: DatabaseProcedure) => void;
@@ -10,9 +12,9 @@ type MacroCardProps = {
 export default function MacroCard({ macro, editMacro }: MacroCardProps) {
     const inUseColor = () => {
         if (macro?.inUse) {
-            return "green";
+            return mainTheme.colors.primary;
         } else {
-            return "red";
+            return mainTheme.colors.secondary;
         }
     };
     const newMacro = () => {
@@ -38,14 +40,14 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
     if (macro) {
         return (
             <Pressable>
-                <Card style={styles.MacroCard}>
+                <Card style={styles(mainTheme).squareCard}>
                     <Card.Title title={macro.nickname} />
                     <Card.Content>
                         <Text>Kcal: {macro.kcalPerDish}</Text>
                         <Text>Dishes: {macro.dishesPerDay}</Text>
                     </Card.Content>
                     <Card.Actions>
-                        <View style={styles.MacroButtons}>
+                        <View style={styles(mainTheme).cardActionButtons}>
                             <Pressable onPress={() => editMacro(macro, "update")}>
                                 <Entypo name="edit" size={27} color="black"></Entypo>
                             </Pressable>
@@ -63,28 +65,15 @@ export default function MacroCard({ macro, editMacro }: MacroCardProps) {
     } else {
         return (
             <Pressable>
-                <View style={styles.MacroCard}>
+                <Card style={styles(mainTheme).squareCard}>
                     <Text>Add new macro</Text>
+                    <View style={styles(mainTheme).cardActionButtons}>
                     <Pressable onPress={newMacro}>
                         <Entypo name="plus" size={60} color="black"></Entypo>
                     </Pressable>
-                </View>
+                    </View>
+                </Card>
             </Pressable>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    MacroCard: {
-        width: 130,
-        height: 130,
-        backgroundColor: "white",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    MacroButtons: {
-        display: "flex",
-        flexDirection: "row",
-        gap: 10,
-    },
-});
