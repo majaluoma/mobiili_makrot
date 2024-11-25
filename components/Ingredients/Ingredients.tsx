@@ -11,17 +11,11 @@ import {
 import { z } from "zod";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Ingredient } from "../../types/Interfaces";
-import log from "../../services/log";
 import SearchBar from "./SearchBar";
-import { TestIngredientAPIdata } from "../../types/TestData";
 import MacroPortionList from "./MacroPortionList";
 import { Button, Card, TextInput } from "react-native-paper";
-import KeepAwakeButton from "./KeepAwakeButton";
-import { fetchMany } from "../../services/Fineli";
 import { styles } from "../../styles/mainStyles";
 import { mainTheme } from "../../styles/mainTheme";
-import { ImageBackground } from "react-native";
-const image = {uri: 'https://cdn.pixabay.com/photo/2016/03/23/04/44/fruits-and-vegetables-1274079_960_720.png'};
 
 const numberSchema = z.number();
 
@@ -30,12 +24,15 @@ type IngredientAmount = {
     amount: number;
 };
 
+/** Main page for ingredients page. Shows ingredients, allows searching them and
+ * makes it possible to see distributed portions per macros
+ *  
+ * */
 export default function Ingredients() {
-    const baseIngredient: IngredientAmount = {
-        ingredient: TestIngredientAPIdata[0],
+    const [ingredients, setIngredients] = useState([{
+        ingredient: null,
         amount: 0,
-    };
-    const [ingredients, setIngredients] = useState([baseIngredient]);
+    } as IngredientAmount]);
     const [ApiIngredients, setApiIngredients] = useState([] as Ingredient[]);
     const [searchBarToggled, setSearchBarToggled] = useState(false);
     const [ingredientRow, setIngredientRow] = useState(0);
@@ -187,7 +184,7 @@ export default function Ingredients() {
     );
 
     const updateSurplus = (surplus : number) => {
-        setSurplus(surplus);
+        setSurplus(Math.floor(surplus/kcal * grams));
     }
 
     return (
@@ -201,7 +198,7 @@ export default function Ingredients() {
                         <View>
                         </View>
                         <MacroPortionList grams= {grams} kcal={kcal} updateSurplus={updateSurplus}></MacroPortionList>
-                        <Text>Surplus after distributing: {surplus} kcal</Text>
+                        <Text>Surplus after distributing: {surplus} g</Text>
                         <StatusBar style="auto" />
                     </View>
                 </Card>

@@ -1,12 +1,15 @@
 import log from "./log";
 import { Ingredient } from "../types/Interfaces";
-import { TestIngredientAPIdata as testIngredientAPIdata } from "../types/TestData";
 const API_URL = "https://fineli.fi/fineli/api/v1/foods/";
 const HEADERS = {
     "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
 };
 const DATA_SOURCE = process.env.DATA_SOURCE;
+
+/** This file provides fineli API calls
+ *  
+ * */
 
 
 export const testConnection =  async () => {
@@ -26,9 +29,6 @@ export const testConnection =  async () => {
 }
 
 export const fetchMany = async (keyword: string) => {
-    if (DATA_SOURCE === "fakedata") {
-        return testIngredientAPIdata;
-    }
     try {
         log.debug(`Fetching FineliAPI: ${API_URL + keyword}`);
         const response = await fetch(API_URL + `?q=*${keyword}*` + addFilters(), { method: "GET", headers: HEADERS });
@@ -369,9 +369,6 @@ class Fineli {
     }
 
     private async fetchMany(keyword: string): Promise<Ingredient[]> {
-        if (this.fakeData) {
-            return testIngredientAPIdata;
-        }
         const fetchApi = this.osoite + keyword;
         try {
             log.debug(`Fetching FineliAPI: ${fetchApi}`);

@@ -1,6 +1,7 @@
 
-//Tämä kirjoittaja.ts luo logeja. IOlio importataan suoraan eri tiedostoihin.
-//Asetukset loggerille:
+/** Allows different level of logs. Setting of loglevel is not yet implemented
+ *  
+ * */
 
 const log = {
     debug: console.log,

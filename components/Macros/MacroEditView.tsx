@@ -14,6 +14,9 @@ type MacroEditViewProps = {
     close: () => void
 };
 
+/** Allows editin and saving edits to Macros
+ *  
+ * */
 export default function MacroEditView({ macro, saveEditedMacro, close }: MacroEditViewProps) {
     const [editedMacro, setEditedMacro] = useState(macro);
     const numberSchema = z.number();

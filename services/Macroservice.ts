@@ -7,16 +7,16 @@ export type FbMacros = Record<string, Macro>;
 
 const database = getDatabase(app);
 
-/** lisää tai muuttaa tietokannassa olevia tietoja nimimerkin pohjalta.
- *
- */
+/** api client for Firebase database for Macro information
+ *  
+ * */
 export async function addOne(macro: Macro): Promise<Macro> {
     const macroRef = ref(database, `/macros`);
     console.log("addMacro");
     const newMacroReference = await push(macroRef, macro);
     const res = await get(newMacroReference);
-    const data = res.val() as Macro;
-    return data;
+    const data = res.val();
+    return {...data, macroKey: newMacroReference.key} as Macro;
 }
 
 export async function fetchOne(macro: Macro): Promise<Macro> {

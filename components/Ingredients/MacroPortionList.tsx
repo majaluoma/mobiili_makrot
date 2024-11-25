@@ -14,6 +14,9 @@ type MacroPortionListProps = {
 };
 
 
+/** Lists Macros and tjheir distributed portions
+ *  
+ * */
 export default function MacroPortionList({ kcal, grams, updateSurplus }: MacroPortionListProps) {
     const { macros } = useMacros();
     const [fixedPortion, setFixedPortion]: [
@@ -88,7 +91,7 @@ export default function MacroPortionList({ kcal, grams, updateSurplus }: MacroPo
         const macroResult = [...macros];
         let leftToShare = kcal;
         for (const macro of macroResult) {
-            const portionKcal = macro.macro.kcalPerDish / macro.macro.dishesPerDay;
+            const portionKcal = macro.macro.kcalPerDish;
             if (leftToShare < portionKcal) {
                 console.debug(`GiveRound: ${kcal}, ${macros.length}`);
                 updateSurplus(Math.floor(leftToShare));
@@ -121,10 +124,10 @@ export default function MacroPortionList({ kcal, grams, updateSurplus }: MacroPo
                     ></ShowAndEditInput>
                 )}
                 
-                {macrosInUse.map((macro) => {
+                {macrosInUse.map((macro, i) => {
                     return (
                         macro && (
-                            <View style={styles(mainTheme).macroPortionItem} key={macro.macro.macroKey + "_pl"}>
+                            <View style={styles(mainTheme).macroPortionItem} key={`${macro.macro.macroKey}_${i}_pl`}>
                                 <Pressable
                                     onPress={() => editMacro(macro)}
                                     style={styles(mainTheme).macroPortions}

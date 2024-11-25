@@ -9,6 +9,10 @@ type MacroCardProps = {
     editMacro: (macro: Macro, procedure: DatabaseProcedure) => void;
 };
 
+/** Shows some basic information on macros and serves buttons to 
+ * edit, toggle and remove a Macro
+ *  
+ * */
 export default function MacroCard({ macro, editMacro }: MacroCardProps) {
     const inUseColor = () => {
         if (macro?.inUse) {

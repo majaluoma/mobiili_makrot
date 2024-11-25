@@ -2,20 +2,19 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 import { Macro } from '../types/Interfaces';
 import { addOne, removeOne, updateOne, fetchMacros } from '../services/Macroservice';
 
-// Define the context shape
 type MacroContextType = {
     macros: Macro[];
     addMacro: (newMacro: Macro) => void;
     updateMacro: (updatedMacro: Macro) => void;
     deleteMacro: (deletedMacro: Macro) => void;
 };
-// Create the context
 const MacroContext = createContext<MacroContextType | undefined>(undefined);
 
 type MacroContextProviderProps = {
     children : ReactNode
 }
-// Macro context provider
+/** Offers methods to edit, update and delet macros in Google Firebase
+ * */
 export const MacroContextProvider = ({ children } : MacroContextProviderProps) => {
     const [macros, setMacros] = useState<Macro[]>([]);
     
@@ -36,8 +35,8 @@ export const MacroContextProvider = ({ children } : MacroContextProviderProps) =
     };
 
     const updateMacro = (updatedMacro: Macro) => {
-        setMacros(macros.map(m => m.macroKey === updatedMacro.macroKey ? updatedMacro : m));
         updateOne(updatedMacro);
+        setMacros(macros.map(m => m.macroKey === updatedMacro.macroKey ? updatedMacro : m));
     };
 
     const deleteMacro = (deletedMacro : Macro) => {

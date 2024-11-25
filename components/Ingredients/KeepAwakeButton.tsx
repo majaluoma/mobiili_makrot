@@ -5,6 +5,8 @@ import { useState } from "react";
 import { MD3Theme, Text } from "react-native-paper";
 import { mainTheme } from "../../styles/mainTheme";
 
+/** Allows user to keep window open, while he or she distributes food based on calculations
+ * */
 export default function KeepAwakeButton() {
     const [keepAwakeColor, setKeepAwakeColor] = useState<"black" | "white">("black");
     const keepOpen = () => {

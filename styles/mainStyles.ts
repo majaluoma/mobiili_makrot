@@ -157,6 +157,7 @@ export const styles = (theme : MD3Theme) => StyleSheet.create({
         flexWrap: "wrap",
         justifyContent: "space-evenly",
         marginTop: 5,
+        flexDirection:"row"
     },
     infoText: {
         fontSize: 10,

@@ -17,6 +17,8 @@ import { mainTheme } from "../../styles/mainTheme";
 
 const stringSchema = z.string();
 
+/** Allows user to search for ingredients in Fineli api
+ * */
 export default function SearchBar({ callback }: { callback: (ingredient?: Ingredient) => void }) {
     const [visible, setVisible] = useState(true);
     const [keyword, setKeyword] = useState("");

@@ -8,6 +8,9 @@ type IngredientResultProps = {
     callback: (ingredient: Ingredient) => void;
 };
 
+/** Should Display one ingredient in Ingredient Search Bar
+ *  
+ * */
 export default function IngredientResult({ ingredient, callback }: IngredientResultProps) {
     useEffect(() => {
         log.debug(ingredient);

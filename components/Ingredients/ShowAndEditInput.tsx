@@ -7,6 +7,9 @@ import { Macro } from "../../types/Interfaces";
 import { styles } from "../../styles/mainStyles";
 import { mainTheme } from "../../styles/mainTheme";
 
+/** Allows user to show and edit macro portions
+ *  
+ * */
 export default function ShowAndEditInput({
     callback,
     fixedPortion,

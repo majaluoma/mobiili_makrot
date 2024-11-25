@@ -8,6 +8,9 @@ import { styles } from "../../styles/mainStyles";
 import { mainTheme } from "../../styles/mainTheme";
 import { Card } from "react-native-paper";
 
+/** Lists Macros as a nice collection of cards
+ *  
+ * */
 export default function Macros() {
     const { macros, addMacro, updateMacro, deleteMacro } = useMacros();
     const [editingMakro, setEditingMakro]: [
@@ -69,10 +72,10 @@ export default function Macros() {
                 <Text >Here are all macros in your group. You can add, edit and remove macros. Press the bowl icon to switch Macro from being used or not. MAcros with red bowl icon are not taken into account when calculating portions</Text>
                 </Card>
                 <View style={styles(mainTheme).macrosList}>
-                    {macros.map((macro) => {
+                    {macros.map((macro, i) => {
                         return (
                             <MacroCard
-                                key={macro.macroKey}
+                                key={`${macro.macroKey}_${i}_mc`}
                                 macro={macro}
                                 editMacro={editMacro}
                             ></MacroCard>
